@@ -1,4 +1,4 @@
-const CACHE_NAME = 'study-call-v1';
+const CACHE_NAME = 'study-call-v2';
 const ASSETS = [
   './',
   './index.html',
