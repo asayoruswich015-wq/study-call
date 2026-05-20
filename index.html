@@ -12,131 +12,178 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <title>スタディコール</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap');
-  :root {
-    --bg:#0a0e1a;--surface:#111827;--surface2:#1a2236;--border:#1e2d45;
-    --accent:#3b82f6;--accent2:#06b6d4;--success:#10b981;--warning:#f59e0b;
-    --danger:#ef4444;--text:#e2e8f0;--text2:#94a3b8;--text3:#475569;
-  }
-  *{box-sizing:border-box;margin:0;padding:0;}
-  body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
-  body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(59,130,246,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(59,130,246,0.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;}
-  header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:rgba(10,14,26,0.95);backdrop-filter:blur(10px);position:sticky;top:0;z-index:100;}
-  .logo{font-family:'Space Mono',monospace;font-size:17px;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-  .logo-sub{font-size:10px;color:var(--text3);font-family:'Space Mono',monospace;margin-left:auto;}
-  .tabs{display:flex;gap:2px;padding:10px 14px 0;border-bottom:1px solid var(--border);}
-  .tab{padding:8px 16px;border-radius:8px 8px 0 0;background:transparent;border:none;color:var(--text2);font-family:'Noto Sans JP',sans-serif;font-size:13px;cursor:pointer;transition:all 0.2s;border-bottom:2px solid transparent;white-space:nowrap;}
-  .tab.active{color:var(--accent);border-bottom-color:var(--accent);background:rgba(59,130,246,0.05);}
-  .tab:hover:not(.active){color:var(--text);}
-  .main{padding:14px;max-width:860px;margin:0 auto;}
-  .page{display:none;}.page.active{display:block;}
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px;}
-  .card-title{font-size:11px;font-weight:700;color:var(--text3);margin-bottom:12px;text-transform:uppercase;letter-spacing:0.08em;font-family:'Space Mono',monospace;}
-  .api-key-section{background:rgba(59,130,246,0.05);border:1px solid rgba(59,130,246,0.2);border-radius:10px;padding:11px;margin-bottom:12px;}
-  .api-key-section label{font-size:11px;color:var(--accent2);display:block;margin-bottom:7px;font-family:'Space Mono',monospace;}
-  .api-key-row{display:flex;gap:6px;}
-  .api-key-row input{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-family:'Space Mono',monospace;font-size:11px;outline:none;}
-  .btn-sm{padding:7px 11px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text2);font-size:11px;cursor:pointer;white-space:nowrap;transition:all 0.2s;font-family:'Noto Sans JP',sans-serif;}
-  .btn-sm:hover{border-color:var(--accent);color:var(--accent);}
-  .photo-pair{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
-  .photo-slot{border:2px dashed var(--border);border-radius:10px;padding:14px 8px;text-align:center;cursor:pointer;transition:all 0.3s;position:relative;overflow:hidden;min-height:100px;display:flex;flex-direction:column;align-items:center;justify-content:center;}
-  .photo-slot:hover{border-color:var(--accent);background:rgba(59,130,246,0.05);}
-  .photo-slot.has-photo{border-color:var(--success);border-style:solid;}
-  .photo-slot input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
-  .slot-icon{font-size:26px;margin-bottom:5px;}.slot-label{font-size:12px;color:var(--text2);font-weight:700;}.slot-sub{font-size:10px;color:var(--text3);margin-top:2px;}
-  .photo-thumb{width:100%;height:75px;object-fit:cover;border-radius:6px;display:none;}
-  .photo-check{position:absolute;top:5px;right:5px;background:var(--success);color:white;border-radius:50%;width:18px;height:18px;display:none;align-items:center;justify-content:center;font-size:10px;}
-  .btn-analyze{width:100%;padding:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:10px;color:white;font-family:'Noto Sans JP',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.3s;margin-bottom:10px;}
-  .btn-analyze:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(59,130,246,0.4);}
-  .btn-analyze:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
-  .analysis-result{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:11px;margin-bottom:10px;display:none;}
-  .analysis-result.show{display:block;}
-  .result-tag{display:inline-block;padding:2px 7px;background:rgba(59,130,246,0.15);border-radius:4px;font-size:10px;color:var(--accent2);font-family:'Space Mono',monospace;margin-bottom:6px;}
-  .result-content{font-size:13px;color:var(--text2);line-height:1.6;}
-  .field{margin-bottom:11px;}.field label{display:block;font-size:11px;color:var(--text2);margin-bottom:4px;}
-  .field input,.field select{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 11px;color:var(--text);font-family:'Noto Sans JP',sans-serif;font-size:13px;outline:none;transition:border-color 0.2s;}
-  .field input:focus,.field select:focus{border-color:var(--accent);}
-  .field select option{background:var(--surface2);}
-  .schedule-preview{margin-top:10px;display:none;}.schedule-preview.show{display:block;}
-  .schedule-title{font-size:10px;color:var(--text3);margin-bottom:7px;font-family:'Space Mono',monospace;}
-  .schedule-items{display:flex;flex-wrap:wrap;gap:4px;}
-  .schedule-item{padding:3px 8px;border-radius:20px;font-size:10px;font-family:'Space Mono',monospace;}
-  .si-r1{background:rgba(59,130,246,0.15);color:#93c5fd;border:1px solid rgba(59,130,246,0.3);}
-  .si-r2{background:rgba(6,182,212,0.15);color:#67e8f9;border:1px solid rgba(6,182,212,0.3);}
-  .si-r3{background:rgba(16,185,129,0.15);color:#6ee7b7;border:1px solid rgba(16,185,129,0.3);}
-  .si-r4{background:rgba(245,158,11,0.15);color:#fcd34d;border:1px solid rgba(245,158,11,0.3);}
-  .si-r5{background:rgba(239,68,68,0.15);color:#fca5a5;border:1px solid rgba(239,68,68,0.3);}
-  .gcal-note{background:rgba(245,158,11,0.07);border:1px solid rgba(245,158,11,0.2);border-radius:8px;padding:8px 11px;font-size:11px;color:var(--warning);margin-top:7px;}
-  .btn-register{width:100%;padding:11px;background:var(--surface2);border:1px solid var(--success);border-radius:10px;color:var(--success);font-family:'Noto Sans JP',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:all 0.2s;margin-top:10px;}
-  .btn-register:hover{background:rgba(16,185,129,0.1);}
-  .btn-register:disabled{opacity:0.4;cursor:not-allowed;}
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap');
+:root{--bg:#0a0e1a;--surface:#111827;--surface2:#1a2236;--border:#1e2d45;--accent:#3b82f6;--accent2:#06b6d4;--success:#10b981;--warning:#f59e0b;--danger:#ef4444;--text:#e2e8f0;--text2:#94a3b8;--text3:#475569;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(59,130,246,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(59,130,246,0.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;}
+header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:rgba(10,14,26,0.95);backdrop-filter:blur(10px);position:sticky;top:0;z-index:100;}
+.logo{font-family:'Space Mono',monospace;font-size:17px;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.logo-sub{font-size:10px;color:var(--text3);font-family:'Space Mono',monospace;margin-left:auto;}
+.tabs{display:flex;gap:2px;padding:10px 14px 0;border-bottom:1px solid var(--border);overflow-x:auto;}
+.tab{padding:8px 14px;border-radius:8px 8px 0 0;background:transparent;border:none;color:var(--text2);font-family:'Noto Sans JP',sans-serif;font-size:12px;cursor:pointer;transition:all 0.2s;border-bottom:2px solid transparent;white-space:nowrap;}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent);background:rgba(59,130,246,0.05);}
+.tab:hover:not(.active){color:var(--text);}
+.main{padding:14px;max-width:860px;margin:0 auto;}
+.page{display:none;}.page.active{display:block;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px;}
+.card-title{font-size:11px;font-weight:700;color:var(--text3);margin-bottom:12px;text-transform:uppercase;letter-spacing:0.08em;font-family:'Space Mono',monospace;}
+.api-key-section{background:rgba(59,130,246,0.05);border:1px solid rgba(59,130,246,0.2);border-radius:10px;padding:11px;margin-bottom:12px;}
+.api-key-section label{font-size:11px;color:var(--accent2);display:block;margin-bottom:7px;font-family:'Space Mono',monospace;}
+.api-key-row{display:flex;gap:6px;}
+.api-key-row input{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-family:'Space Mono',monospace;font-size:11px;outline:none;}
+.btn-sm{padding:7px 11px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text2);font-size:11px;cursor:pointer;white-space:nowrap;transition:all 0.2s;font-family:'Noto Sans JP',sans-serif;}
+.btn-sm:hover{border-color:var(--accent);color:var(--accent);}
+.photo-pair{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.photo-slot{border:2px dashed var(--border);border-radius:10px;padding:14px 8px;text-align:center;cursor:pointer;transition:all 0.3s;position:relative;overflow:hidden;min-height:100px;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.photo-slot:hover{border-color:var(--accent);background:rgba(59,130,246,0.05);}
+.photo-slot.has-photo{border-color:var(--success);border-style:solid;}
+.photo-slot input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.slot-icon{font-size:26px;margin-bottom:5px;}.slot-label{font-size:12px;color:var(--text2);font-weight:700;}.slot-sub{font-size:10px;color:var(--text3);margin-top:2px;}
+.photo-thumb{width:100%;height:75px;object-fit:cover;border-radius:6px;display:none;}
+.photo-check{position:absolute;top:5px;right:5px;background:var(--success);color:white;border-radius:50%;width:18px;height:18px;display:none;align-items:center;justify-content:center;font-size:10px;}
+.btn-analyze{width:100%;padding:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:10px;color:white;font-family:'Noto Sans JP',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.3s;margin-bottom:10px;}
+.btn-analyze:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(59,130,246,0.4);}
+.btn-analyze:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+.analysis-result{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:11px;margin-bottom:10px;display:none;}
+.analysis-result.show{display:block;}
+.result-tag{display:inline-block;padding:2px 7px;background:rgba(59,130,246,0.15);border-radius:4px;font-size:10px;color:var(--accent2);font-family:'Space Mono',monospace;margin-bottom:6px;}
+.result-content{font-size:13px;color:var(--text2);line-height:1.6;}
+.field{margin-bottom:11px;}.field label{display:block;font-size:11px;color:var(--text2);margin-bottom:4px;}
+.field input,.field select,.field textarea{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 11px;color:var(--text);font-family:'Noto Sans JP',sans-serif;font-size:13px;outline:none;transition:border-color 0.2s;}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent);}
+.field select option{background:var(--surface2);}
+.field textarea{resize:none;height:70px;line-height:1.6;}
+.schedule-preview{margin-top:10px;display:none;}.schedule-preview.show{display:block;}
+.schedule-title{font-size:10px;color:var(--text3);margin-bottom:7px;font-family:'Space Mono',monospace;}
+.schedule-items{display:flex;flex-wrap:wrap;gap:4px;}
+.schedule-item{padding:3px 8px;border-radius:20px;font-size:10px;font-family:'Space Mono',monospace;}
+.si-r1{background:rgba(59,130,246,0.15);color:#93c5fd;border:1px solid rgba(59,130,246,0.3);}
+.si-r2{background:rgba(6,182,212,0.15);color:#67e8f9;border:1px solid rgba(6,182,212,0.3);}
+.si-r3{background:rgba(16,185,129,0.15);color:#6ee7b7;border:1px solid rgba(16,185,129,0.3);}
+.si-r4{background:rgba(245,158,11,0.15);color:#fcd34d;border:1px solid rgba(245,158,11,0.3);}
+.si-r5{background:rgba(239,68,68,0.15);color:#fca5a5;border:1px solid rgba(239,68,68,0.3);}
+.gcal-note{background:rgba(245,158,11,0.07);border:1px solid rgba(245,158,11,0.2);border-radius:8px;padding:8px 11px;font-size:11px;color:var(--warning);margin-top:7px;}
+.btn-register{width:100%;padding:11px;background:var(--surface2);border:1px solid var(--success);border-radius:10px;color:var(--success);font-family:'Noto Sans JP',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:all 0.2s;margin-top:10px;}
+.btn-register:hover{background:rgba(16,185,129,0.1);}
+.btn-register:disabled{opacity:0.4;cursor:not-allowed;}
 
-  /* ===== 科目フィルター ===== */
-  .filter-section{margin-bottom:14px;}
-  .filter-label{font-size:10px;color:var(--text3);font-family:'Space Mono',monospace;margin-bottom:8px;letter-spacing:0.05em;text-transform:uppercase;}
-  .filter-tabs{display:flex;flex-wrap:wrap;gap:6px;}
-  .filter-btn{padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--text2);font-size:12px;font-family:'Noto Sans JP',sans-serif;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
-  .filter-btn:hover{border-color:var(--accent);color:var(--accent);}
-  .filter-btn.active{font-weight:700;}
-  .filter-btn[data-filter="all"].active{background:rgba(59,130,246,0.15);border-color:var(--accent);color:var(--accent);}
-  .filter-btn[data-filter="math"].active{background:rgba(239,68,68,0.15);border-color:#ef4444;color:#fca5a5;}
-  .filter-btn[data-filter="english"].active{background:rgba(59,130,246,0.15);border-color:#3b82f6;color:#93c5fd;}
-  .filter-btn[data-filter="science"].active{background:rgba(16,185,129,0.15);border-color:#10b981;color:#6ee7b7;}
-  .filter-btn[data-filter="social"].active{background:rgba(245,158,11,0.15);border-color:#f59e0b;color:#fcd34d;}
-  .filter-btn[data-filter="japanese"].active{background:rgba(168,85,247,0.15);border-color:#a855f7;color:#d8b4fe;}
-  .filter-btn[data-filter="other"].active{background:rgba(148,163,184,0.15);border-color:#94a3b8;color:#cbd5e1;}
-  .filter-count{font-size:10px;color:var(--text3);font-family:'Space Mono',monospace;margin-bottom:10px;}
+/* リスト */
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:13px;text-align:center;}
+.stat-number{font-family:'Space Mono',monospace;font-size:24px;font-weight:700;color:var(--accent);}
+.stat-label{font-size:10px;color:var(--text3);margin-top:3px;}
+.filter-section{margin-bottom:14px;}
+.filter-label{font-size:10px;color:var(--text3);font-family:'Space Mono',monospace;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.05em;}
+.filter-tabs{display:flex;flex-wrap:wrap;gap:6px;}
+.filter-btn{padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--text2);font-size:12px;font-family:'Noto Sans JP',sans-serif;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+.filter-btn.active{font-weight:700;}
+.filter-btn[data-filter="all"].active{background:rgba(59,130,246,0.15);border-color:var(--accent);color:var(--accent);}
+.filter-btn[data-filter="math"].active{background:rgba(239,68,68,0.15);border-color:#ef4444;color:#fca5a5;}
+.filter-btn[data-filter="english"].active{background:rgba(59,130,246,0.15);border-color:#3b82f6;color:#93c5fd;}
+.filter-btn[data-filter="science"].active{background:rgba(16,185,129,0.15);border-color:#10b981;color:#6ee7b7;}
+.filter-btn[data-filter="social"].active{background:rgba(245,158,11,0.15);border-color:#f59e0b;color:#fcd34d;}
+.filter-btn[data-filter="japanese"].active{background:rgba(168,85,247,0.15);border-color:#a855f7;color:#d8b4fe;}
+.filter-btn[data-filter="other"].active{background:rgba(148,163,184,0.15);border-color:#94a3b8;color:#cbd5e1;}
+.filter-count{font-size:10px;color:var(--text3);font-family:'Space Mono',monospace;margin-bottom:10px;}
+.unit-list{display:flex;flex-direction:column;gap:10px;}
+.unit-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:13px;transition:border-color 0.2s;}
+.unit-card:hover{border-color:var(--accent2);}
+.unit-header{display:flex;align-items:flex-start;gap:8px;margin-bottom:10px;}
+.unit-info{flex:1;min-width:0;}
+.unit-subject{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700;font-family:'Space Mono',monospace;}
+.unit-name{font-size:14px;font-weight:500;margin:3px 0 2px;}
+.unit-meta{font-size:11px;color:var(--text3);}
+.unit-actions{display:flex;gap:4px;flex-shrink:0;}
+.btn-review{padding:5px 10px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);border-radius:6px;color:var(--success);font-size:11px;cursor:pointer;transition:all 0.2s;white-space:nowrap;font-family:'Noto Sans JP',sans-serif;}
+.btn-review:hover{background:rgba(16,185,129,0.2);}
+.btn-delete{padding:5px 8px;background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--text3);font-size:11px;cursor:pointer;transition:all 0.2s;}
+.btn-delete:hover{border-color:var(--danger);color:var(--danger);}
+.curve-section{background:var(--surface2);border-radius:10px;padding:11px;margin-bottom:10px;}
+.curve-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;}
+.curve-metric-label{font-size:10px;color:var(--text3);font-family:'Space Mono',monospace;margin-bottom:2px;}
+.curve-metric-value{font-family:'Space Mono',monospace;font-size:20px;font-weight:700;}
+.curve-canvas-wrap{width:100%;height:120px;}
+canvas.curve-chart{width:100%;height:100%;display:block;}
+.curve-legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
+.curve-legend-item{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text3);}
+.legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.progress-section{margin-bottom:8px;}
+.progress-label{display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-bottom:4px;font-family:'Space Mono',monospace;}
+.progress-bar{height:5px;background:var(--border);border-radius:3px;overflow:hidden;}
+.progress-fill{height:100%;border-radius:3px;transition:width 0.8s ease;background:linear-gradient(90deg,var(--accent),var(--accent2));}
+.review-badges{display:flex;flex-wrap:wrap;gap:4px;}
+.review-badge{padding:2px 7px;border-radius:12px;font-size:10px;font-family:'Space Mono',monospace;}
+.rb-done{background:rgba(16,185,129,0.15);color:var(--success);}
+.rb-pending{background:rgba(245,158,11,0.15);color:var(--warning);}
+.rb-upcoming{background:var(--surface2);color:var(--text3);}
+.empty-state{text-align:center;padding:50px 20px;color:var(--text3);}
+.empty-icon{font-size:44px;margin-bottom:14px;}
+.subj-math{background:rgba(239,68,68,0.2);color:#fca5a5;}
+.subj-english{background:rgba(59,130,246,0.2);color:#93c5fd;}
+.subj-science{background:rgba(16,185,129,0.2);color:#6ee7b7;}
+.subj-social{background:rgba(245,158,11,0.2);color:#fcd34d;}
+.subj-japanese{background:rgba(168,85,247,0.2);color:#d8b4fe;}
+.subj-other{background:rgba(148,163,184,0.2);color:#cbd5e1;}
 
-  .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;}
-  .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:13px;text-align:center;}
-  .stat-number{font-family:'Space Mono',monospace;font-size:24px;font-weight:700;color:var(--accent);}
-  .stat-label{font-size:10px;color:var(--text3);margin-top:3px;}
-  .unit-list{display:flex;flex-direction:column;gap:10px;}
-  .unit-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:13px;transition:border-color 0.2s;}
-  .unit-card:hover{border-color:var(--accent2);}
-  .unit-header{display:flex;align-items:flex-start;gap:8px;margin-bottom:10px;}
-  .unit-info{flex:1;min-width:0;}
-  .unit-subject{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700;font-family:'Space Mono',monospace;}
-  .unit-name{font-size:14px;font-weight:500;margin:3px 0 2px;}
-  .unit-meta{font-size:11px;color:var(--text3);}
-  .unit-actions{display:flex;gap:4px;flex-shrink:0;}
-  .btn-review{padding:5px 10px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);border-radius:6px;color:var(--success);font-size:11px;cursor:pointer;transition:all 0.2s;white-space:nowrap;font-family:'Noto Sans JP',sans-serif;}
-  .btn-review:hover{background:rgba(16,185,129,0.2);}
-  .btn-delete{padding:5px 8px;background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--text3);font-size:11px;cursor:pointer;transition:all 0.2s;}
-  .btn-delete:hover{border-color:var(--danger);color:var(--danger);}
-  .curve-section{background:var(--surface2);border-radius:10px;padding:11px;margin-bottom:10px;}
-  .curve-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;}
-  .curve-metric-label{font-size:10px;color:var(--text3);font-family:'Space Mono',monospace;margin-bottom:2px;}
-  .curve-metric-value{font-family:'Space Mono',monospace;font-size:20px;font-weight:700;}
-  .curve-canvas-wrap{width:100%;height:120px;}
-  canvas.curve-chart{width:100%;height:100%;display:block;}
-  .curve-legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
-  .curve-legend-item{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text3);}
-  .legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
-  .progress-section{margin-bottom:8px;}
-  .progress-label{display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-bottom:4px;font-family:'Space Mono',monospace;}
-  .progress-bar{height:5px;background:var(--border);border-radius:3px;overflow:hidden;}
-  .progress-fill{height:100%;border-radius:3px;transition:width 0.8s ease;background:linear-gradient(90deg,var(--accent),var(--accent2));}
-  .review-badges{display:flex;flex-wrap:wrap;gap:4px;}
-  .review-badge{padding:2px 7px;border-radius:12px;font-size:10px;font-family:'Space Mono',monospace;}
-  .rb-done{background:rgba(16,185,129,0.15);color:var(--success);}
-  .rb-pending{background:rgba(245,158,11,0.15);color:var(--warning);}
-  .rb-upcoming{background:var(--surface2);color:var(--text3);}
-  .empty-state{text-align:center;padding:50px 20px;color:var(--text3);}
-  .empty-icon{font-size:44px;margin-bottom:14px;}
-  #toast{position:fixed;bottom:16px;right:14px;left:14px;padding:10px 16px;border-radius:10px;font-size:13px;font-weight:500;z-index:999;transform:translateY(100px);opacity:0;transition:all 0.3s;text-align:center;}
-  #toast.show{transform:translateY(0);opacity:1;}
-  #toast.success{background:rgba(16,185,129,0.95);color:white;}
-  #toast.error{background:rgba(239,68,68,0.95);color:white;}
-  #toast.info{background:rgba(59,130,246,0.95);color:white;}
-  .subj-math{background:rgba(239,68,68,0.2);color:#fca5a5;}
-  .subj-english{background:rgba(59,130,246,0.2);color:#93c5fd;}
-  .subj-science{background:rgba(16,185,129,0.2);color:#6ee7b7;}
-  .subj-social{background:rgba(245,158,11,0.2);color:#fcd34d;}
-  .subj-japanese{background:rgba(168,85,247,0.2);color:#d8b4fe;}
-  .subj-other{background:rgba(148,163,184,0.2);color:#cbd5e1;}
-  .spinner{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin 0.8s linear infinite;margin-right:6px;vertical-align:middle;}
-  @keyframes spin{to{transform:rotate(360deg);}}
+/* ===== 勉強記録 ===== */
+/* カレンダー */
+.diary-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.diary-month{font-family:'Space Mono',monospace;font-size:16px;font-weight:700;color:var(--accent);}
+.diary-nav{display:flex;gap:6px;}
+.diary-nav button{padding:5px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text2);font-size:13px;cursor:pointer;transition:all 0.2s;}
+.diary-nav button:hover{border-color:var(--accent);color:var(--accent);}
+.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:14px;}
+.cal-day-header{text-align:center;font-size:10px;color:var(--text3);font-family:'Space Mono',monospace;padding:4px 0;}
+.cal-day{min-height:40px;border-radius:8px;padding:4px;cursor:pointer;transition:all 0.2s;position:relative;display:flex;flex-direction:column;align-items:center;}
+.cal-day:hover{background:rgba(59,130,246,0.08);}
+.cal-day.today{background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.3);}
+.cal-day.has-record{cursor:pointer;}
+.cal-day.selected{background:rgba(59,130,246,0.15);border:1px solid var(--accent);}
+.cal-day-num{font-size:12px;font-family:'Space Mono',monospace;color:var(--text2);margin-bottom:2px;}
+.cal-day.today .cal-day-num{color:var(--accent);font-weight:700;}
+.cal-day.other-month .cal-day-num{color:var(--text3);}
+.cal-dot-wrap{display:flex;flex-wrap:wrap;gap:2px;justify-content:center;}
+.cal-dot{width:5px;height:5px;border-radius:50%;}
+.cal-streak{position:absolute;bottom:2px;right:3px;font-size:8px;color:var(--warning);}
+
+/* 記録詳細 */
+.diary-detail{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:12px;display:none;}
+.diary-detail.show{display:block;}
+.diary-detail-date{font-size:11px;color:var(--accent2);font-family:'Space Mono',monospace;margin-bottom:8px;}
+.diary-record-item{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px;margin-bottom:6px;}
+.diary-record-subj{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700;font-family:'Space Mono',monospace;margin-bottom:4px;}
+.diary-record-content{font-size:13px;color:var(--text2);line-height:1.5;}
+.diary-record-memo{font-size:11px;color:var(--text3);margin-top:4px;}
+.diary-record-actions{display:flex;justify-content:flex-end;margin-top:6px;}
+
+/* 記録入力 */
+.diary-input-section{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px;}
+.diary-photo-slot{border:2px dashed var(--border);border-radius:10px;padding:16px 8px;text-align:center;cursor:pointer;transition:all 0.3s;position:relative;overflow:hidden;min-height:90px;display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:10px;}
+.diary-photo-slot:hover{border-color:var(--accent2);background:rgba(6,182,212,0.05);}
+.diary-photo-slot.has-photo{border-color:var(--success);border-style:solid;}
+.diary-photo-slot input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.diary-thumb{width:100%;height:80px;object-fit:cover;border-radius:6px;display:none;}
+
+/* 統計 */
+.diary-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
+.diary-stat{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center;}
+.diary-stat-num{font-family:'Space Mono',monospace;font-size:20px;font-weight:700;color:var(--accent2);}
+.diary-stat-label{font-size:10px;color:var(--text3);margin-top:2px;}
+
+.btn-diary-add{width:100%;padding:10px;background:rgba(6,182,212,0.1);border:1px solid rgba(6,182,212,0.3);border-radius:10px;color:var(--accent2);font-family:'Noto Sans JP',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all 0.2s;margin-bottom:12px;}
+.btn-diary-add:hover{background:rgba(6,182,212,0.2);}
+.btn-diary-save{width:100%;padding:11px;background:linear-gradient(135deg,var(--accent2),var(--accent));border:none;border-radius:10px;color:white;font-family:'Noto Sans JP',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.3s;}
+.btn-diary-save:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(6,182,212,0.3);}
+.btn-diary-save:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+
+#toast{position:fixed;bottom:16px;right:14px;left:14px;padding:10px 16px;border-radius:10px;font-size:13px;font-weight:500;z-index:999;transform:translateY(100px);opacity:0;transition:all 0.3s;text-align:center;}
+#toast.show{transform:translateY(0);opacity:1;}
+#toast.success{background:rgba(16,185,129,0.95);color:white;}
+#toast.error{background:rgba(239,68,68,0.95);color:white;}
+#toast.info{background:rgba(59,130,246,0.95);color:white;}
+.spinner{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin 0.8s linear infinite;margin-right:6px;vertical-align:middle;}
+@keyframes spin{to{transform:rotate(360deg);}}
 </style>
 </head>
 <body>
@@ -147,9 +194,11 @@
 <div class="tabs">
   <button class="tab active" onclick="showTab('register',this)">📸 登録</button>
   <button class="tab" onclick="showTab('list',this)">📚 リスト</button>
+  <button class="tab" onclick="showTab('diary',this)">📅 記録</button>
 </div>
 <div class="main">
-  <!-- REGISTER -->
+
+  <!-- 登録 -->
   <div class="page active" id="page-register">
     <div class="api-key-section">
       <label>🔑 CLAUDE API KEY</label>
@@ -160,7 +209,7 @@
       </div>
     </div>
     <div class="card">
-      <div class="card-title">📷 教材を2枚撮影（ページ範囲を自動認識）</div>
+      <div class="card-title">📷 教材を2枚撮影</div>
       <div class="photo-pair">
         <div class="photo-slot" id="slot-first">
           <input type="file" id="photo-first" accept="image/*" capture="environment" onchange="handlePhoto('first',this)">
@@ -192,21 +241,19 @@
       <div class="schedule-preview" id="schedule-preview">
         <div class="schedule-title">📅 復習スケジュール（エビングハウス忘却曲線）</div>
         <div class="schedule-items" id="schedule-items"></div>
-        <div class="gcal-note">📅 登録後にGoogleカレンダーへ5回分の予定を一括追加できます</div>
+        <div class="gcal-note">📅 登録後にGoogleカレンダーへ5回分の予定を追加できます</div>
       </div>
       <button class="btn-register" id="btn-register" onclick="registerUnit()" disabled>✅ 登録してスケジュール設定</button>
     </div>
   </div>
 
-  <!-- LIST -->
+  <!-- リスト -->
   <div class="page" id="page-list">
     <div class="stats-row">
       <div class="stat-card"><div class="stat-number" id="stat-total">0</div><div class="stat-label">登録単元</div></div>
       <div class="stat-card"><div class="stat-number" id="stat-reviews" style="color:var(--warning)">0</div><div class="stat-label">今日の復習</div></div>
       <div class="stat-card"><div class="stat-number" id="stat-mastered" style="color:var(--success)">0</div><div class="stat-label">習得済み</div></div>
     </div>
-
-    <!-- 科目フィルター -->
     <div class="filter-section">
       <div class="filter-label">📚 科目で絞り込む</div>
       <div class="filter-tabs">
@@ -220,11 +267,81 @@
       </div>
     </div>
     <div class="filter-count" id="filter-count"></div>
+    <div class="unit-list" id="unit-list"></div>
+  </div>
 
-    <div class="unit-list" id="unit-list">
-      <div class="empty-state"><div class="empty-icon">📖</div><div>まだ単元が登録されていません<br>写真を撮って登録しましょう！</div></div>
+  <!-- 勉強記録 -->
+  <div class="page" id="page-diary">
+
+    <!-- 統計 -->
+    <div class="diary-stats">
+      <div class="diary-stat"><div class="diary-stat-num" id="diary-total">0</div><div class="diary-stat-label">総記録日数</div></div>
+      <div class="diary-stat"><div class="diary-stat-num" id="diary-streak" style="color:var(--warning)">0</div><div class="diary-stat-label">連続記録🔥</div></div>
+      <div class="diary-stat"><div class="diary-stat-num" id="diary-month-count" style="color:var(--success)">0</div><div class="diary-stat-label">今月の日数</div></div>
+    </div>
+
+    <!-- カレンダー -->
+    <div class="card">
+      <div class="diary-header">
+        <div class="diary-month" id="diary-month-label"></div>
+        <div class="diary-nav">
+          <button onclick="changeMonth(-1)">◀</button>
+          <button onclick="changeMonth(1)">▶</button>
+        </div>
+      </div>
+      <div class="calendar-grid" id="calendar-grid"></div>
+    </div>
+
+    <!-- 選択日の記録詳細 -->
+    <div class="diary-detail" id="diary-detail">
+      <div class="diary-detail-date" id="diary-detail-date"></div>
+      <div id="diary-detail-records"></div>
+    </div>
+
+    <!-- 記録追加ボタン -->
+    <button class="btn-diary-add" onclick="toggleDiaryInput()">＋ 今日の勉強を記録する</button>
+
+    <!-- 記録入力フォーム -->
+    <div class="diary-input-section" id="diary-input-section" style="display:none;">
+      <div class="card-title">📸 勉強記録を追加</div>
+
+      <!-- カメラ -->
+      <div class="diary-photo-slot" id="diary-photo-slot">
+        <input type="file" id="diary-photo" accept="image/*" capture="environment" onchange="handleDiaryPhoto(this)">
+        <div id="diary-slot-icon" style="font-size:26px;margin-bottom:5px;">📷</div>
+        <div id="diary-slot-label" style="font-size:12px;color:var(--text2);font-weight:700;">教材を撮影（任意）</div>
+        <div id="diary-slot-sub" style="font-size:10px;color:var(--text3);margin-top:2px;">AIが内容を自動認識</div>
+        <img class="diary-thumb" id="diary-thumb" alt="">
+      </div>
+
+      <div class="field">
+        <label>教科</label>
+        <select id="diary-subject">
+          <option value="math">数学</option><option value="english">英語</option>
+          <option value="science">理科</option><option value="social">社会</option>
+          <option value="japanese">国語</option><option value="other">その他</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>学習内容（AIが自動入力・手動でも編集可）</label>
+        <input type="text" id="diary-content" placeholder="例：二次方程式 P.30〜35" />
+      </div>
+      <div class="field">
+        <label>メモ・感想（任意）</label>
+        <textarea id="diary-memo" placeholder="例：公式を3つ覚えた。明日は応用問題を解く。"></textarea>
+      </div>
+      <div class="field">
+        <label>学習時間（分）</label>
+        <input type="number" id="diary-time" placeholder="例：45" min="0" />
+      </div>
+
+      <button class="btn-analyze" id="btn-diary-analyze" onclick="analyzeDiaryPhoto()" style="margin-bottom:10px;background:linear-gradient(135deg,var(--accent2),var(--accent));">
+        🔍 写真からAIが内容を自動入力
+      </button>
+      <button class="btn-diary-save" onclick="saveDiaryRecord()">📅 記録を保存</button>
     </div>
   </div>
+
 </div>
 <div id="toast"></div>
 
@@ -249,27 +366,32 @@
 </div>
 
 <script>
-const STORAGE_KEY='study_call_v3',API_KEY_ST='study_call_apikey';
-const INTERVALS=[1,3,7,21,30],LABELS=['1日後','3日後','7日後','21日後','30日後'];
+const STORAGE_KEY='study_call_v3', API_KEY_ST='study_call_apikey', DIARY_KEY='study_call_diary_v1';
+const INTERVALS=[1,3,7,21,30], LABELS=['1日後','3日後','7日後','21日後','30日後'];
 const SUBJ_NAMES={math:'数学',english:'英語',science:'理科',social:'社会',japanese:'国語',other:'その他'};
+const SUBJ_COLORS={math:'#ef4444',english:'#3b82f6',science:'#10b981',social:'#f59e0b',japanese:'#a855f7',other:'#94a3b8'};
 let currentFilter='all';
+let diaryYear=new Date().getFullYear(), diaryMonth=new Date().getMonth();
+let selectedDate='', diaryPhotoData=null;
 
 const loadUnits=()=>{try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');}catch{return[];}};
 const saveUnits=u=>localStorage.setItem(STORAGE_KEY,JSON.stringify(u));
 const loadApiKey=()=>localStorage.getItem(API_KEY_ST)||'';
+const loadDiary=()=>{try{return JSON.parse(localStorage.getItem(DIARY_KEY)||'[]');}catch{return[];}};
+const saveDiary=d=>localStorage.setItem(DIARY_KEY,JSON.stringify(d));
 
 function saveApiKey(){const k=document.getElementById('api-key').value.trim();if(!k){toast('APIキーを入力してください','error');return;}localStorage.setItem(API_KEY_ST,k);toast('APIキーを保存しました ✓','success');}
 function toggleApiKey(){const i=document.getElementById('api-key');i.type=i.type==='password'?'text':'password';}
-function showTab(tab,btn){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.getElementById('page-'+tab).classList.add('active');btn.classList.add('active');if(tab==='list')renderList();}
-
-// ===== 科目フィルター =====
-function setFilter(filter,btn){
-  currentFilter=filter;
-  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  renderList();
+function showTab(tab,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+tab).classList.add('active');btn.classList.add('active');
+  if(tab==='list')renderList();
+  if(tab==='diary')renderDiary();
 }
+function setFilter(filter,btn){currentFilter=filter;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderList();}
 
+// 写真
 const photos={first:null,last:null};
 function handlePhoto(slot,input){
   const file=input.files[0];if(!file)return;
@@ -284,6 +406,207 @@ function handlePhoto(slot,input){
   };reader.readAsDataURL(file);
 }
 
+// 勉強記録用写真
+function handleDiaryPhoto(input){
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const url=e.target.result;diaryPhotoData=url.split(',')[1];
+    const thumb=document.getElementById('diary-thumb');thumb.src=url;thumb.style.display='block';
+    const slot=document.getElementById('diary-photo-slot');slot.classList.add('has-photo');
+    document.getElementById('diary-slot-icon').style.display='none';
+    document.getElementById('diary-slot-label').style.display='none';
+    document.getElementById('diary-slot-sub').style.display='none';
+    toast('写真を選択しました。AIで内容を自動入力できます','info');
+  };reader.readAsDataURL(file);
+}
+
+// 記録写真をAI解析
+async function analyzeDiaryPhoto(){
+  const apiKey=loadApiKey()||document.getElementById('api-key').value.trim();
+  if(!apiKey){toast('APIキーを保存してください','error');return;}
+  if(!diaryPhotoData){toast('写真を選択してください','error');return;}
+  const btn=document.getElementById('btn-diary-analyze');
+  btn.disabled=true;btn.innerHTML='<span class="spinner"></span>解析中...';
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:400,messages:[{role:'user',content:[
+        {type:'image',source:{type:'base64',media_type:'image/jpeg',data:diaryPhotoData}},
+        {type:'text',text:'この教材画像から学習した内容を1行で要約してください（例：数学 二次方程式 P.30〜35）。JSONのみで返してください：{"subject":"math/english/science/social/japanese/other","content":"学習内容の要約（30字以内）"}'}
+      ]}]})
+    });
+    if(!res.ok){const e=await res.json();throw new Error(e.error?.message||'APIエラー');}
+    const data=await res.json();
+    const raw=data.content[0].text;
+    let parsed;try{parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());}catch{throw new Error('解析失敗');}
+    if(parsed.subject)document.getElementById('diary-subject').value=parsed.subject;
+    if(parsed.content)document.getElementById('diary-content').value=parsed.content;
+    toast('AIが内容を自動入力しました！','success');
+  }catch(err){toast('エラー：'+err.message,'error');}
+  finally{btn.disabled=false;btn.innerHTML='🔍 写真からAIが内容を自動入力';}
+}
+
+// 記録保存
+function saveDiaryRecord(){
+  const content=document.getElementById('diary-content').value.trim();
+  if(!content){toast('学習内容を入力してください','error');return;}
+  const diary=loadDiary();
+  const today=new Date().toISOString().split('T')[0];
+  diary.push({
+    id:Date.now().toString(),
+    date:today,
+    subject:document.getElementById('diary-subject').value,
+    content,
+    memo:document.getElementById('diary-memo').value,
+    time:parseInt(document.getElementById('diary-time').value)||0,
+    createdAt:new Date().toISOString()
+  });
+  saveDiary(diary);
+  // リセット
+  document.getElementById('diary-content').value='';
+  document.getElementById('diary-memo').value='';
+  document.getElementById('diary-time').value='';
+  document.getElementById('diary-photo').value='';
+  document.getElementById('diary-thumb').style.display='none';
+  document.getElementById('diary-photo-slot').classList.remove('has-photo');
+  document.getElementById('diary-slot-icon').style.display='';
+  document.getElementById('diary-slot-label').style.display='';
+  document.getElementById('diary-slot-sub').style.display='';
+  diaryPhotoData=null;
+  document.getElementById('diary-input-section').style.display='none';
+  toast('記録を保存しました！','success');
+  renderDiary();
+}
+
+function toggleDiaryInput(){
+  const sec=document.getElementById('diary-input-section');
+  sec.style.display=sec.style.display==='none'?'block':'none';
+}
+
+// カレンダー描画
+function renderDiary(){
+  const diary=loadDiary();
+  const today=new Date().toISOString().split('T')[0];
+
+  // 統計
+  const days=new Set(diary.map(d=>d.date));
+  document.getElementById('diary-total').textContent=days.size;
+
+  // 連続記録
+  let streak=0,d=new Date();
+  while(true){
+    const ds=d.toISOString().split('T')[0];
+    if(days.has(ds)){streak++;d.setDate(d.getDate()-1);}else break;
+  }
+  document.getElementById('diary-streak').textContent=streak;
+
+  // 今月の日数
+  const monthStr=`${diaryYear}-${String(diaryMonth+1).padStart(2,'0')}`;
+  const monthDays=diary.filter(r=>r.date.startsWith(monthStr));
+  const monthDaySet=new Set(monthDays.map(r=>r.date));
+  document.getElementById('diary-month-count').textContent=monthDaySet.size;
+
+  // カレンダー
+  const label=`${diaryYear}年${diaryMonth+1}月`;
+  document.getElementById('diary-month-label').textContent=label;
+
+  const grid=document.getElementById('calendar-grid');
+  grid.innerHTML='';
+  ['日','月','火','水','木','金','土'].forEach(d=>{
+    const h=document.createElement('div');h.className='cal-day-header';h.textContent=d;grid.appendChild(h);
+  });
+
+  const first=new Date(diaryYear,diaryMonth,1);
+  const last=new Date(diaryYear,diaryMonth+1,0);
+  const startDow=first.getDay();
+
+  // 前月
+  for(let i=0;i<startDow;i++){
+    const prev=new Date(diaryYear,diaryMonth,1-startDow+i);
+    const el=document.createElement('div');el.className='cal-day other-month';
+    el.innerHTML=`<div class="cal-day-num">${prev.getDate()}</div>`;
+    grid.appendChild(el);
+  }
+
+  // 今月
+  for(let day=1;day<=last.getDate();day++){
+    const dateStr=`${diaryYear}-${String(diaryMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+    const recs=diary.filter(r=>r.date===dateStr);
+    const el=document.createElement('div');
+    el.className='cal-day'+(dateStr===today?' today':'')+(dateStr===selectedDate?' selected':'');
+    const dots=recs.map(r=>`<div class="cal-dot" style="background:${SUBJ_COLORS[r.subject]||'#94a3b8'}"></div>`).join('');
+    el.innerHTML=`<div class="cal-day-num">${day}</div><div class="cal-dot-wrap">${dots}</div>`;
+    el.onclick=()=>selectDate(dateStr);
+    grid.appendChild(el);
+  }
+
+  // 翌月
+  const endDow=last.getDay();
+  for(let i=1;i<7-endDow;i++){
+    const el=document.createElement('div');el.className='cal-day other-month';
+    el.innerHTML=`<div class="cal-day-num">${i}</div>`;grid.appendChild(el);
+  }
+
+  if(selectedDate)showDiaryDetail(selectedDate);
+}
+
+function selectDate(dateStr){
+  selectedDate=dateStr;
+  renderDiary();
+  showDiaryDetail(dateStr);
+}
+
+function showDiaryDetail(dateStr){
+  const diary=loadDiary();
+  const recs=diary.filter(r=>r.date===dateStr);
+  const detailEl=document.getElementById('diary-detail');
+  const dateLabel=document.getElementById('diary-detail-date');
+  const [y,m,d]=dateStr.split('-');
+  dateLabel.textContent=`${y}年${parseInt(m)}月${parseInt(d)}日の記録`;
+
+  if(!recs.length){
+    document.getElementById('diary-detail-records').innerHTML=`<div style="font-size:13px;color:var(--text3);text-align:center;padding:16px">この日の記録はありません</div>`;
+    detailEl.classList.add('show');return;
+  }
+
+  let totalTime=0;
+  const html=recs.map(r=>{
+    totalTime+=r.time||0;
+    return `
+      <div class="diary-record-item">
+        <span class="diary-record-subj subj-${r.subject}">${SUBJ_NAMES[r.subject]||'その他'}</span>
+        <div class="diary-record-content">${r.content}</div>
+        ${r.memo?`<div class="diary-record-memo">💬 ${r.memo}</div>`:''}
+        ${r.time?`<div class="diary-record-memo">⏱ ${r.time}分</div>`:''}
+        <div class="diary-record-actions">
+          <button onclick="deleteDiaryRecord('${r.id}')" style="padding:4px 8px;background:transparent;border:1px solid var(--border);border-radius:4px;color:var(--text3);font-size:11px;cursor:pointer;">🗑 削除</button>
+        </div>
+      </div>`;
+  }).join('');
+
+  document.getElementById('diary-detail-records').innerHTML=
+    html+(totalTime?`<div style="font-size:11px;color:var(--accent2);text-align:right;margin-top:4px;font-family:Space Mono,monospace">合計 ${totalTime}分</div>`:'');
+  detailEl.classList.add('show');
+}
+
+function deleteDiaryRecord(id){
+  if(!confirm('この記録を削除しますか？'))return;
+  saveDiary(loadDiary().filter(r=>r.id!==id));
+  renderDiary();toast('削除しました','info');
+}
+
+function changeMonth(dir){
+  diaryMonth+=dir;
+  if(diaryMonth<0){diaryMonth=11;diaryYear--;}
+  if(diaryMonth>11){diaryMonth=0;diaryYear++;}
+  selectedDate='';
+  document.getElementById('diary-detail').classList.remove('show');
+  renderDiary();
+}
+
+// AI解析（登録タブ）
 async function analyzePhotos(){
   const apiKey=loadApiKey()||document.getElementById('api-key').value.trim();
   if(!apiKey){toast('APIキーを保存してください','error');return;}
@@ -293,20 +616,15 @@ async function analyzePhotos(){
     const content=[];
     if(photos.first){content.push({type:'image',source:{type:'base64',media_type:'image/jpeg',data:photos.first}});content.push({type:'text',text:'【最初のページの画像です】'});}
     if(photos.last){content.push({type:'image',source:{type:'base64',media_type:'image/jpeg',data:photos.last}});content.push({type:'text',text:'【最後のページの画像です】'});}
-    const twoPhotos=photos.first&&photos.last;
-    content.push({type:'text',text:`${twoPhotos?'2枚の教材画像から学習範囲を解析してください。':'1枚の教材画像から学習情報を解析してください。'}
-以下のJSON形式のみで返してください（前後の説明文不要）：
-{"subject":"教科名","subjectKey":"math/english/science/social/japanese/other","unitName":"単元名","pageRange":"ページ範囲","summary":"内容（1〜2文）","keywords":["キーワード1"]}
-著作権に配慮し、テキストの転載はせず構造的な情報のみ抽出してください。`});
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-opus-4-5',max_tokens:1000,messages:[{role:'user',content}]})});
+    content.push({type:'text',text:`教材画像から学習範囲を解析してください。JSONのみで返してください：{"subject":"教科名","subjectKey":"math/english/science/social/japanese/other","unitName":"単元名","pageRange":"ページ範囲","summary":"内容の説明（1〜2文）","keywords":["キーワード1"]}著作権に配慮し、テキストの転載はせず構造的な情報のみ抽出してください。`});
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:600,messages:[{role:'user',content}]})});
     if(!res.ok){const e=await res.json();throw new Error(e.error?.message||'APIエラー');}
     const data=await res.json();const raw=data.content[0].text;
-    let parsed;try{parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());}catch{throw new Error('レスポンスの解析に失敗しました');}
+    let parsed;try{parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());}catch{throw new Error('解析に失敗しました');}
     if(parsed.subjectKey)document.getElementById('subject').value=parsed.subjectKey;
     if(parsed.unitName)document.getElementById('unit-name').value=parsed.unitName;
     if(parsed.pageRange)document.getElementById('page-num').value=parsed.pageRange;
-    const photoCount=(photos.first?1:0)+(photos.last?1:0);
-    document.getElementById('result-text').innerHTML=`<strong>${parsed.unitName||'不明'}</strong>（${parsed.subject||'不明'}）<br>${parsed.pageRange?'📄 範囲：'+parsed.pageRange+'<br>':''}${parsed.summary||''}<br>${parsed.keywords?.length?'キーワード：'+parsed.keywords.join('、'):''}<span style="font-size:10px;color:var(--text3)"> ${photoCount}枚から解析</span>`;
+    document.getElementById('result-text').innerHTML=`<strong>${parsed.unitName||'不明'}</strong>（${parsed.subject||'不明'}）<br>${parsed.pageRange?'📄 範囲：'+parsed.pageRange+'<br>':''}${parsed.summary||''}<br>${parsed.keywords?.length?'キーワード：'+parsed.keywords.join('、'):''}`;
     document.getElementById('analysis-result').classList.add('show');showSchedulePreview();document.getElementById('btn-register').disabled=false;toast('解析完了！','success');
   }catch(err){toast('エラー: '+err.message,'error');}
   finally{btn.disabled=false;btn.innerHTML='🔍 AIで解析（単元・ページ範囲を自動入力）';}
@@ -343,20 +661,9 @@ function makeGCalUrl(title,dateStr,desc){
   const d=dateStr.replace(/-/g,'');const nextDay=new Date(dateStr);nextDay.setDate(nextDay.getDate()+1);const nd=nextDay.toISOString().split('T')[0].replace(/-/g,'');
   return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${d}/${nd}&details=${encodeURIComponent(desc)}`;
 }
-
 let gcalQueue=[],gcalIndex=0;
-function openGCal(unit){
-  const sl=SUBJ_NAMES[unit.subject]||'その他';
-  gcalQueue=unit.reviews.map((r,i)=>({title:`【復習${i+1}回目】${sl}：${unit.unitName}`,date:r.date,desc:`${unit.pageNum?'ページ：'+unit.pageNum+'\n':''}${unit.memo?'メモ：'+unit.memo+'\n':''}\nスタディコール`,label:r.label}));
-  gcalIndex=0;showGCalModal();
-}
-function showGCalModal(){
-  if(gcalIndex>=gcalQueue.length){closeGCalModal();toast('全ての復習予定をカレンダーに追加しました！','success');return;}
-  const item=gcalQueue[gcalIndex];
-  document.getElementById('gcal-step').textContent=`${gcalIndex+1} / ${gcalQueue.length}`;
-  document.getElementById('gcal-label').textContent=item.label;document.getElementById('gcal-date').textContent=item.date;document.getElementById('gcal-title-txt').textContent=item.title;
-  document.getElementById('gcal-modal').style.display='flex';
-}
+function openGCal(unit){const sl=SUBJ_NAMES[unit.subject]||'その他';gcalQueue=unit.reviews.map((r,i)=>({title:`【復習${i+1}回目】${sl}：${unit.unitName}`,date:r.date,desc:`${unit.pageNum?'ページ：'+unit.pageNum+'\n':''}${unit.memo?'メモ：'+unit.memo+'\n':''}\nスタディコール`,label:r.label}));gcalIndex=0;showGCalModal();}
+function showGCalModal(){if(gcalIndex>=gcalQueue.length){closeGCalModal();toast('全ての復習予定をカレンダーに追加しました！','success');return;}const item=gcalQueue[gcalIndex];document.getElementById('gcal-step').textContent=`${gcalIndex+1} / ${gcalQueue.length}`;document.getElementById('gcal-label').textContent=item.label;document.getElementById('gcal-date').textContent=item.date;document.getElementById('gcal-title-txt').textContent=item.title;document.getElementById('gcal-modal').style.display='flex';}
 function gcalOpen(){const item=gcalQueue[gcalIndex];window.open(makeGCalUrl(item.title,item.date,item.desc),'_blank');gcalIndex++;setTimeout(showGCalModal,600);}
 function gcalSkip(){gcalIndex++;showGCalModal();}
 function closeGCalModal(){document.getElementById('gcal-modal').style.display='none';}
@@ -388,8 +695,8 @@ function drawCurve(canvas,unit){
   ctx.font='9px monospace';
   [100,75,50,25].forEach(pct=>{const y=chartY(pct);ctx.strokeStyle='rgba(255,255,255,0.05)';ctx.lineWidth=1;ctx.setLineDash([]);ctx.beginPath();ctx.moveTo(28,y);ctx.lineTo(w,y);ctx.stroke();ctx.fillStyle='rgba(148,163,184,0.5)';ctx.fillText(pct+'%',1,y+3);});
   unit.reviews.forEach(r=>{const rDay=Math.floor((new Date(r.date)-reg)/86400000),x=chartX(rDay);ctx.strokeStyle=r.done?'rgba(16,185,129,0.4)':'rgba(148,163,184,0.12)';ctx.lineWidth=1.2;ctx.setLineDash(r.done?[]:[3,3]);ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h-12);ctx.stroke();ctx.setLineDash([]);});
-  ctx.beginPath();points.forEach((p,i)=>{i===0?ctx.moveTo(chartX(p.x),chartY(p.y)):ctx.lineTo(chartX(p.x),chartY(p.y));});ctx.lineTo(chartX(maxDay),h);ctx.lineTo(chartX(0),h);ctx.closePath();const gA=ctx.createLinearGradient(0,0,0,h);gA.addColorStop(0,'rgba(59,130,246,0.07)');gA.addColorStop(1,'rgba(59,130,246,0.01)');ctx.fillStyle=gA;ctx.fill();
   const pastPts=points.filter(p=>p.x<=todayD);
+  ctx.beginPath();points.forEach((p,i)=>{i===0?ctx.moveTo(chartX(p.x),chartY(p.y)):ctx.lineTo(chartX(p.x),chartY(p.y));});ctx.lineTo(chartX(maxDay),h);ctx.lineTo(chartX(0),h);ctx.closePath();const gA=ctx.createLinearGradient(0,0,0,h);gA.addColorStop(0,'rgba(59,130,246,0.07)');gA.addColorStop(1,'rgba(59,130,246,0.01)');ctx.fillStyle=gA;ctx.fill();
   if(pastPts.length>=2){ctx.beginPath();pastPts.forEach((p,i)=>{i===0?ctx.moveTo(chartX(p.x),chartY(p.y)):ctx.lineTo(chartX(p.x),chartY(p.y));});ctx.lineTo(chartX(Math.min(todayD,maxDay)),h);ctx.lineTo(chartX(0),h);ctx.closePath();const gP=ctx.createLinearGradient(0,0,0,h);gP.addColorStop(0,'rgba(59,130,246,0.30)');gP.addColorStop(1,'rgba(59,130,246,0.03)');ctx.fillStyle=gP;ctx.fill();}
   ctx.beginPath();points.forEach((p,i)=>{i===0?ctx.moveTo(chartX(p.x),chartY(p.y)):ctx.lineTo(chartX(p.x),chartY(p.y));});ctx.strokeStyle='rgba(59,130,246,0.22)';ctx.lineWidth=1.5;ctx.setLineDash([4,4]);ctx.stroke();ctx.setLineDash([]);
   if(pastPts.length>=2){ctx.beginPath();pastPts.forEach((p,i)=>{i===0?ctx.moveTo(chartX(p.x),chartY(p.y)):ctx.lineTo(chartX(p.x),chartY(p.y));});ctx.strokeStyle='rgba(59,130,246,0.9)';ctx.lineWidth=2.5;ctx.stroke();}
@@ -404,38 +711,17 @@ function drawCurve(canvas,unit){
 function renderList(){
   const allUnits=loadUnits();const today=new Date().toISOString().split('T')[0];
   let totalRevs=0,mastered=0;
-  const listEl=document.getElementById('unit-list');
-
-  // フィルター適用
   const units=currentFilter==='all'?allUnits:allUnits.filter(u=>u.subject===currentFilter);
-
-  // 件数表示
   const countEl=document.getElementById('filter-count');
-  if(currentFilter==='all'){countEl.textContent=allUnits.length>0?`全 ${allUnits.length} 単元`:'';}
-  else{countEl.textContent=`${SUBJ_NAMES[currentFilter]} : ${units.length} 単元  /  全 ${allUnits.length} 単元`;}
-
-  // 統計は全単元で計算
-  allUnits.forEach(unit=>{
-    totalRevs+=unit.reviews.filter(r=>r.date===today&&!r.done).length;
-    const pct=Math.round((unit.reviews.filter(r=>r.done).length/unit.reviews.length)*100);
-    if(pct===100)mastered++;
-  });
-  document.getElementById('stat-total').textContent=allUnits.length;
-  document.getElementById('stat-reviews').textContent=totalRevs;
-  document.getElementById('stat-mastered').textContent=mastered;
-
-  if(units.length===0){
-    listEl.innerHTML=allUnits.length===0
-      ?`<div class="empty-state"><div class="empty-icon">📖</div><div>まだ単元が登録されていません<br>写真を撮って登録しましょう！</div></div>`
-      :`<div class="empty-state"><div class="empty-icon">🔍</div><div>${SUBJ_NAMES[currentFilter]||'この科目'}の単元はまだありません</div></div>`;
-    return;
-  }
-
+  countEl.textContent=currentFilter==='all'?(allUnits.length>0?`全 ${allUnits.length} 単元`:''):`${SUBJ_NAMES[currentFilter]} : ${units.length} 単元 / 全 ${allUnits.length} 単元`;
+  allUnits.forEach(unit=>{totalRevs+=unit.reviews.filter(r=>r.date===today&&!r.done).length;const pct=Math.round((unit.reviews.filter(r=>r.done).length/unit.reviews.length)*100);if(pct===100)mastered++;});
+  document.getElementById('stat-total').textContent=allUnits.length;document.getElementById('stat-reviews').textContent=totalRevs;document.getElementById('stat-mastered').textContent=mastered;
+  const listEl=document.getElementById('unit-list');
+  if(units.length===0){listEl.innerHTML=allUnits.length===0?`<div class="empty-state"><div class="empty-icon">📖</div><div>まだ単元が登録されていません</div></div>`:`<div class="empty-state"><div class="empty-icon">🔍</div><div>${SUBJ_NAMES[currentFilter]}の単元はまだありません</div></div>`;return;}
   listEl.innerHTML='';
   units.slice().reverse().forEach(unit=>{
     const todayRevs=unit.reviews.filter(r=>r.date===today&&!r.done);
-    const done=unit.reviews.filter(r=>r.done).length,total=unit.reviews.length;
-    const pct=Math.round((done/total)*100),ret=currentRetention(unit);
+    const done=unit.reviews.filter(r=>r.done).length,total=unit.reviews.length,pct=Math.round((done/total)*100),ret=currentRetention(unit);
     const retColor=ret>=70?'var(--success)':ret>=40?'var(--warning)':'var(--danger)';
     const sl=SUBJ_NAMES[unit.subject]||'その他',cid=`cv-${unit.id}`;
     const badgesHtml=unit.reviews.map((r,i)=>{
@@ -445,7 +731,6 @@ function renderList(){
       if(r.done){const url=`https://calendar.google.com/calendar/r/search?q=${encodeURIComponent(title)}`;return `<span class="review-badge ${cls}">${sym} ${r.label}（${r.date}）<span onclick="window.open('${url}','_blank')" style="cursor:pointer;margin-left:3px;opacity:0.6">🗑</span></span>`;}
       return `<span class="review-badge ${cls}">${sym} ${r.label}（${r.date}）<span onclick="openCalForReview('${unit.id}',${i})" style="cursor:pointer;margin-left:3px">📅</span></span>`;
     }).join('');
-
     const card=document.createElement('div');card.className='unit-card';
     card.innerHTML=`
       <div class="unit-header">
@@ -476,8 +761,7 @@ function renderList(){
         <div class="progress-label"><span>習得度</span><span>${pct}%（${done}/${total}回完了）</span></div>
         <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
       </div>
-      <div class="review-badges" style="margin-top:8px">${badgesHtml}</div>
-    `;
+      <div class="review-badges" style="margin-top:8px">${badgesHtml}</div>`;
     listEl.appendChild(card);
     requestAnimationFrame(()=>{const cv=document.getElementById(cid);if(cv)drawCurve(cv,unit);});
   });
@@ -490,13 +774,6 @@ function markReview(unitId){
   unit.reviews.forEach(r=>{if(r.date===today&&!r.done)r.done=true;});
   saveUnits(units);const retAfter=currentRetention(unit);
   renderList();toast(`復習完了！定着率 ${retBefore}% → ${retAfter}% 📈`,'success');
-  requestAnimationFrame(()=>{const cv=document.getElementById(`cv-${unitId}`);if(cv)animateCurve(cv,units.find(u=>u.id===unitId),retBefore,retAfter);});
-}
-
-function animateCurve(canvas,unit,retBefore,retAfter){
-  let frame=0;const totalFrames=50;const metricEl=canvas?.closest('.curve-section')?.querySelector('.curve-metric-value');
-  function step(){frame++;const eased=1-Math.pow(1-frame/totalFrames,3);if(metricEl){const c=Math.round(retBefore+(retAfter-retBefore)*eased);metricEl.textContent=c+'%';metricEl.style.color=c>=70?'var(--success)':c>=40?'var(--warning)':'var(--danger)';}if(frame<totalFrames)requestAnimationFrame(step);else drawCurve(canvas,unit);}
-  requestAnimationFrame(step);
 }
 
 function deleteUnit(unitId){if(!confirm('この単元を削除しますか？'))return;saveUnits(loadUnits().filter(u=>u.id!==unitId));renderList();toast('削除しました','info');}
