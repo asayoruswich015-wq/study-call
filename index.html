@@ -53,7 +53,7 @@ header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;alig
 .field input,.field select,.field textarea{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 11px;color:var(--text);font-family:'Noto Sans JP',sans-serif;font-size:13px;outline:none;transition:border-color 0.2s;}
 .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent);}
 .field select option{background:var(--surface2);}
-.field textarea{resize:none;height:70px;line-height:1.6;}
+.field textarea{resize:none;line-height:1.7;}
 .schedule-preview{margin-top:10px;display:none;}.schedule-preview.show{display:block;}
 .schedule-title{font-size:10px;color:var(--text3);margin-bottom:7px;font-family:'Space Mono',monospace;}
 .schedule-items{display:flex;flex-wrap:wrap;gap:4px;}
@@ -126,8 +126,11 @@ canvas.curve-chart{width:100%;height:100%;display:block;}
 .subj-japanese{background:rgba(168,85,247,0.2);color:#d8b4fe;}
 .subj-other{background:rgba(148,163,184,0.2);color:#cbd5e1;}
 
-/* ===== 勉強記録 ===== */
-/* カレンダー */
+/* ===== 学習記録 ===== */
+.diary-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
+.diary-stat{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center;}
+.diary-stat-num{font-family:'Space Mono',monospace;font-size:20px;font-weight:700;color:var(--accent2);}
+.diary-stat-label{font-size:10px;color:var(--text3);margin-top:2px;}
 .diary-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
 .diary-month{font-family:'Space Mono',monospace;font-size:16px;font-weight:700;color:var(--accent);}
 .diary-nav{display:flex;gap:6px;}
@@ -135,47 +138,81 @@ canvas.curve-chart{width:100%;height:100%;display:block;}
 .diary-nav button:hover{border-color:var(--accent);color:var(--accent);}
 .calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:14px;}
 .cal-day-header{text-align:center;font-size:10px;color:var(--text3);font-family:'Space Mono',monospace;padding:4px 0;}
-.cal-day{min-height:40px;border-radius:8px;padding:4px;cursor:pointer;transition:all 0.2s;position:relative;display:flex;flex-direction:column;align-items:center;}
+.cal-day{min-height:44px;border-radius:8px;padding:4px;cursor:pointer;transition:all 0.2s;position:relative;display:flex;flex-direction:column;align-items:center;}
 .cal-day:hover{background:rgba(59,130,246,0.08);}
 .cal-day.today{background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.3);}
-.cal-day.has-record{cursor:pointer;}
 .cal-day.selected{background:rgba(59,130,246,0.15);border:1px solid var(--accent);}
 .cal-day-num{font-size:12px;font-family:'Space Mono',monospace;color:var(--text2);margin-bottom:2px;}
 .cal-day.today .cal-day-num{color:var(--accent);font-weight:700;}
 .cal-day.other-month .cal-day-num{color:var(--text3);}
 .cal-dot-wrap{display:flex;flex-wrap:wrap;gap:2px;justify-content:center;}
 .cal-dot{width:5px;height:5px;border-radius:50%;}
-.cal-streak{position:absolute;bottom:2px;right:3px;font-size:8px;color:var(--warning);}
 
 /* 記録詳細 */
 .diary-detail{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:12px;display:none;}
 .diary-detail.show{display:block;}
-.diary-detail-date{font-size:11px;color:var(--accent2);font-family:'Space Mono',monospace;margin-bottom:8px;}
-.diary-record-item{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px;margin-bottom:6px;}
-.diary-record-subj{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700;font-family:'Space Mono',monospace;margin-bottom:4px;}
-.diary-record-content{font-size:13px;color:var(--text2);line-height:1.5;}
-.diary-record-memo{font-size:11px;color:var(--text3);margin-top:4px;}
-.diary-record-actions{display:flex;justify-content:flex-end;margin-top:6px;}
+.diary-detail-date{font-size:11px;color:var(--accent2);font-family:'Space Mono',monospace;margin-bottom:10px;font-weight:700;}
+.diary-record-item{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px;}
+.diary-record-subj{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700;font-family:'Space Mono',monospace;margin-bottom:6px;}
+.diary-record-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.diary-record-range{font-size:11px;color:var(--text3);margin-bottom:6px;}
+.diary-record-summary{font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:6px;}
 
-/* 記録入力 */
-.diary-input-section{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px;}
-.diary-photo-slot{border:2px dashed var(--border);border-radius:10px;padding:16px 8px;text-align:center;cursor:pointer;transition:all 0.3s;position:relative;overflow:hidden;min-height:90px;display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:10px;}
+/* 苦労した点 */
+.diary-struggle{background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.2);border-radius:8px;padding:8px 10px;margin-bottom:6px;}
+.diary-struggle-label{font-size:10px;color:var(--warning);font-weight:700;margin-bottom:3px;}
+.diary-struggle-text{font-size:12px;color:var(--text2);line-height:1.6;}
+
+/* できなかった点 */
+.diary-failed{background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.2);border-radius:8px;padding:8px 10px;margin-bottom:6px;}
+.diary-failed-label{font-size:10px;color:var(--danger);font-weight:700;margin-bottom:3px;}
+.diary-failed-text{font-size:12px;color:var(--text2);line-height:1.6;}
+
+/* 感想・メモ */
+.diary-memo-box{background:rgba(59,130,246,0.04);border:1px solid rgba(59,130,246,0.15);border-radius:8px;padding:8px 10px;margin-bottom:6px;}
+.diary-memo-label{font-size:10px;color:var(--accent2);font-weight:700;margin-bottom:3px;}
+.diary-memo-text{font-size:12px;color:var(--text2);line-height:1.6;}
+
+.diary-record-footer{display:flex;justify-content:space-between;align-items:center;margin-top:8px;}
+.diary-time-badge{font-size:10px;color:var(--text3);font-family:'Space Mono',monospace;}
+
+/* 記録入力フォーム */
+.btn-diary-add{width:100%;padding:11px;background:rgba(6,182,212,0.1);border:1px solid rgba(6,182,212,0.3);border-radius:10px;color:var(--accent2);font-family:'Noto Sans JP',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all 0.2s;margin-bottom:12px;}
+.btn-diary-add:hover{background:rgba(6,182,212,0.2);}
+
+.diary-form{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px;display:none;}
+.diary-form.show{display:block;}
+
+/* 記録用フォトスロット（青緑系） */
+.diary-photo-slot{border:2px dashed rgba(6,182,212,0.3);border-radius:10px;padding:14px 8px;text-align:center;cursor:pointer;transition:all 0.3s;position:relative;overflow:hidden;min-height:100px;display:flex;flex-direction:column;align-items:center;justify-content:center;}
 .diary-photo-slot:hover{border-color:var(--accent2);background:rgba(6,182,212,0.05);}
 .diary-photo-slot.has-photo{border-color:var(--success);border-style:solid;}
 .diary-photo-slot input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
-.diary-thumb{width:100%;height:80px;object-fit:cover;border-radius:6px;display:none;}
+.diary-thumb{width:100%;height:75px;object-fit:cover;border-radius:6px;display:none;}
+.diary-check{position:absolute;top:5px;right:5px;background:var(--success);color:white;border-radius:50%;width:18px;height:18px;display:none;align-items:center;justify-content:center;font-size:10px;}
 
-/* 統計 */
-.diary-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
-.diary-stat{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center;}
-.diary-stat-num{font-family:'Space Mono',monospace;font-size:20px;font-weight:700;color:var(--accent2);}
-.diary-stat-label{font-size:10px;color:var(--text3);margin-top:2px;}
+.btn-diary-analyze{width:100%;padding:11px;background:linear-gradient(135deg,var(--accent2),var(--accent));border:none;border-radius:10px;color:white;font-family:'Noto Sans JP',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all 0.3s;margin-bottom:10px;}
+.btn-diary-analyze:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(6,182,212,0.3);}
+.btn-diary-analyze:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
 
-.btn-diary-add{width:100%;padding:10px;background:rgba(6,182,212,0.1);border:1px solid rgba(6,182,212,0.3);border-radius:10px;color:var(--accent2);font-family:'Noto Sans JP',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all 0.2s;margin-bottom:12px;}
-.btn-diary-add:hover{background:rgba(6,182,212,0.2);}
-.btn-diary-save{width:100%;padding:11px;background:linear-gradient(135deg,var(--accent2),var(--accent));border:none;border-radius:10px;color:white;font-family:'Noto Sans JP',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.3s;}
+.diary-analyze-result{background:var(--surface2);border:1px solid rgba(6,182,212,0.2);border-radius:10px;padding:11px;margin-bottom:10px;display:none;}
+.diary-analyze-result.show{display:block;}
+
+/* コメント入力 */
+.comment-section{background:var(--surface2);border-radius:10px;padding:12px;margin-bottom:10px;}
+.comment-section-title{font-size:11px;color:var(--text3);font-weight:700;margin-bottom:10px;letter-spacing:0.05em;}
+.comment-field{margin-bottom:10px;}
+.comment-field label{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;margin-bottom:5px;}
+.comment-field label .comment-icon{font-size:14px;}
+.comment-field textarea{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 11px;color:var(--text);font-family:'Noto Sans JP',sans-serif;font-size:13px;outline:none;transition:border-color 0.2s;resize:none;line-height:1.7;}
+.comment-field textarea:focus{border-color:var(--accent);}
+.comment-field textarea::placeholder{color:var(--text3);}
+.comment-field.struggle textarea:focus{border-color:var(--warning);}
+.comment-field.failed textarea:focus{border-color:var(--danger);}
+.comment-field.memo textarea:focus{border-color:var(--accent2);}
+
+.btn-diary-save{width:100%;padding:12px;background:linear-gradient(135deg,var(--accent2),var(--accent));border:none;border-radius:10px;color:white;font-family:'Noto Sans JP',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.3s;}
 .btn-diary-save:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(6,182,212,0.3);}
-.btn-diary-save:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
 
 #toast{position:fixed;bottom:16px;right:14px;left:14px;padding:10px 16px;border-radius:10px;font-size:13px;font-weight:500;z-index:999;transform:translateY(100px);opacity:0;transition:all 0.3s;text-align:center;}
 #toast.show{transform:translateY(0);opacity:1;}
@@ -184,6 +221,9 @@ canvas.curve-chart{width:100%;height:100%;display:block;}
 #toast.info{background:rgba(59,130,246,0.95);color:white;}
 .spinner{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin 0.8s linear infinite;margin-right:6px;vertical-align:middle;}
 @keyframes spin{to{transform:rotate(360deg);}}
+
+/* カラー定数 */
+.subj-color-math{color:#fca5a5;}.subj-color-english{color:#93c5fd;}.subj-color-science{color:#6ee7b7;}.subj-color-social{color:#fcd34d;}.subj-color-japanese{color:#d8b4fe;}.subj-color-other{color:#cbd5e1;}
 </style>
 </head>
 <body>
@@ -198,7 +238,7 @@ canvas.curve-chart{width:100%;height:100%;display:block;}
 </div>
 <div class="main">
 
-  <!-- 登録 -->
+  <!-- ===== 登録 ===== -->
   <div class="page active" id="page-register">
     <div class="api-key-section">
       <label>🔑 CLAUDE API KEY</label>
@@ -209,7 +249,7 @@ canvas.curve-chart{width:100%;height:100%;display:block;}
       </div>
     </div>
     <div class="card">
-      <div class="card-title">📷 教材を2枚撮影</div>
+      <div class="card-title">📷 教材を2枚撮影（ページ範囲を自動認識）</div>
       <div class="photo-pair">
         <div class="photo-slot" id="slot-first">
           <input type="file" id="photo-first" accept="image/*" capture="environment" onchange="handlePhoto('first',this)">
@@ -247,7 +287,7 @@ canvas.curve-chart{width:100%;height:100%;display:block;}
     </div>
   </div>
 
-  <!-- リスト -->
+  <!-- ===== リスト ===== -->
   <div class="page" id="page-list">
     <div class="stats-row">
       <div class="stat-card"><div class="stat-number" id="stat-total">0</div><div class="stat-label">登録単元</div></div>
@@ -257,23 +297,22 @@ canvas.curve-chart{width:100%;height:100%;display:block;}
     <div class="filter-section">
       <div class="filter-label">📚 科目で絞り込む</div>
       <div class="filter-tabs">
-        <button class="filter-btn active" data-filter="all"      onclick="setFilter('all',this)">すべて</button>
-        <button class="filter-btn"        data-filter="math"     onclick="setFilter('math',this)">数学</button>
-        <button class="filter-btn"        data-filter="english"  onclick="setFilter('english',this)">英語</button>
-        <button class="filter-btn"        data-filter="science"  onclick="setFilter('science',this)">理科</button>
-        <button class="filter-btn"        data-filter="social"   onclick="setFilter('social',this)">社会</button>
-        <button class="filter-btn"        data-filter="japanese" onclick="setFilter('japanese',this)">国語</button>
-        <button class="filter-btn"        data-filter="other"    onclick="setFilter('other',this)">その他</button>
+        <button class="filter-btn active" data-filter="all" onclick="setFilter('all',this)">すべて</button>
+        <button class="filter-btn" data-filter="math" onclick="setFilter('math',this)">数学</button>
+        <button class="filter-btn" data-filter="english" onclick="setFilter('english',this)">英語</button>
+        <button class="filter-btn" data-filter="science" onclick="setFilter('science',this)">理科</button>
+        <button class="filter-btn" data-filter="social" onclick="setFilter('social',this)">社会</button>
+        <button class="filter-btn" data-filter="japanese" onclick="setFilter('japanese',this)">国語</button>
+        <button class="filter-btn" data-filter="other" onclick="setFilter('other',this)">その他</button>
       </div>
     </div>
     <div class="filter-count" id="filter-count"></div>
     <div class="unit-list" id="unit-list"></div>
   </div>
 
-  <!-- 勉強記録 -->
+  <!-- ===== 学習記録 ===== -->
   <div class="page" id="page-diary">
 
-    <!-- 統計 -->
     <div class="diary-stats">
       <div class="diary-stat"><div class="diary-stat-num" id="diary-total">0</div><div class="diary-stat-label">総記録日数</div></div>
       <div class="diary-stat"><div class="diary-stat-num" id="diary-streak" style="color:var(--warning)">0</div><div class="diary-stat-label">連続記録🔥</div></div>
@@ -292,28 +331,52 @@ canvas.curve-chart{width:100%;height:100%;display:block;}
       <div class="calendar-grid" id="calendar-grid"></div>
     </div>
 
-    <!-- 選択日の記録詳細 -->
+    <!-- 選択日の詳細 -->
     <div class="diary-detail" id="diary-detail">
       <div class="diary-detail-date" id="diary-detail-date"></div>
       <div id="diary-detail-records"></div>
     </div>
 
     <!-- 記録追加ボタン -->
-    <button class="btn-diary-add" onclick="toggleDiaryInput()">＋ 今日の勉強を記録する</button>
+    <button class="btn-diary-add" onclick="toggleDiaryForm()">＋ 今日の学習を記録する</button>
 
     <!-- 記録入力フォーム -->
-    <div class="diary-input-section" id="diary-input-section" style="display:none;">
-      <div class="card-title">📸 勉強記録を追加</div>
+    <div class="diary-form" id="diary-form">
+      <div class="card-title">📸 学習記録を追加</div>
 
-      <!-- カメラ -->
-      <div class="diary-photo-slot" id="diary-photo-slot">
-        <input type="file" id="diary-photo" accept="image/*" capture="environment" onchange="handleDiaryPhoto(this)">
-        <div id="diary-slot-icon" style="font-size:26px;margin-bottom:5px;">📷</div>
-        <div id="diary-slot-label" style="font-size:12px;color:var(--text2);font-weight:700;">教材を撮影（任意）</div>
-        <div id="diary-slot-sub" style="font-size:10px;color:var(--text3);margin-top:2px;">AIが内容を自動認識</div>
-        <img class="diary-thumb" id="diary-thumb" alt="">
+      <!-- 2枚撮影（登録タブと同じ） -->
+      <div style="font-size:12px;color:var(--text2);margin-bottom:8px;font-weight:700;">📷 取り組んだ教材を撮影</div>
+      <div class="photo-pair">
+        <div class="diary-photo-slot" id="diary-slot-first">
+          <input type="file" id="diary-photo-first" accept="image/*" capture="environment" onchange="handleDiaryPhoto('first',this)">
+          <div class="slot-icon" id="d-icon-first">📖</div>
+          <div class="slot-label" id="d-label-first">最初のページ</div>
+          <div class="slot-sub" id="d-sub-first">開始ページ</div>
+          <img class="diary-thumb" id="diary-thumb-first" alt="">
+          <div class="diary-check" id="diary-check-first">✓</div>
+        </div>
+        <div class="diary-photo-slot" id="diary-slot-last">
+          <input type="file" id="diary-photo-last" accept="image/*" capture="environment" onchange="handleDiaryPhoto('last',this)">
+          <div class="slot-icon" id="d-icon-last">📕</div>
+          <div class="slot-label" id="d-label-last">最後のページ</div>
+          <div class="slot-sub" id="d-sub-last">終了ページ</div>
+          <img class="diary-thumb" id="diary-thumb-last" alt="">
+          <div class="diary-check" id="diary-check-last">✓</div>
+        </div>
+      </div>
+      <div style="font-size:10px;color:var(--text3);margin-bottom:10px">※ 1枚だけでも解析できます</div>
+
+      <!-- AI解析結果 -->
+      <div class="diary-analyze-result" id="diary-analyze-result">
+        <div class="result-tag">AI 解析結果</div>
+        <div class="result-content" id="diary-result-text"></div>
       </div>
 
+      <button class="btn-diary-analyze" id="btn-diary-analyze" onclick="analyzeDiaryPhotos()">
+        🔍 AIで解析（学習内容を自動認識）
+      </button>
+
+      <!-- 教科・内容入力 -->
       <div class="field">
         <label>教科</label>
         <select id="diary-subject">
@@ -323,26 +386,52 @@ canvas.curve-chart{width:100%;height:100%;display:block;}
         </select>
       </div>
       <div class="field">
-        <label>学習内容（AIが自動入力・手動でも編集可）</label>
-        <input type="text" id="diary-content" placeholder="例：二次方程式 P.30〜35" />
+        <label>単元名・学習内容（AI解析で自動入力）</label>
+        <input type="text" id="diary-content" placeholder="例：二次方程式" />
       </div>
       <div class="field">
-        <label>メモ・感想（任意）</label>
-        <textarea id="diary-memo" placeholder="例：公式を3つ覚えた。明日は応用問題を解く。"></textarea>
+        <label>ページ範囲（AI解析で自動入力）</label>
+        <input type="text" id="diary-range" placeholder="例：P.30〜P.45" />
       </div>
       <div class="field">
         <label>学習時間（分）</label>
         <input type="number" id="diary-time" placeholder="例：45" min="0" />
       </div>
 
-      <button class="btn-analyze" id="btn-diary-analyze" onclick="analyzeDiaryPhoto()" style="margin-bottom:10px;background:linear-gradient(135deg,var(--accent2),var(--accent));">
-        🔍 写真からAIが内容を自動入力
-      </button>
-      <button class="btn-diary-save" onclick="saveDiaryRecord()">📅 記録を保存</button>
+      <!-- コメント入力 -->
+      <div class="comment-section">
+        <div class="comment-section-title">📝 コメント（任意）</div>
+
+        <div class="comment-field struggle">
+          <label>
+            <span class="comment-icon">😓</span>
+            <span style="color:var(--warning)">理解に苦労したところ</span>
+          </label>
+          <textarea id="diary-struggle" rows="3" placeholder="例：微分の連鎖律がまだよくわからない。公式は覚えたが応用できない…"></textarea>
+        </div>
+
+        <div class="comment-field failed">
+          <label>
+            <span class="comment-icon">❌</span>
+            <span style="color:var(--danger)">できなかったところ・間違えたところ</span>
+          </label>
+          <textarea id="diary-failed" rows="3" placeholder="例：P.38の問題3〜5が全滅。三角関数との組み合わせ問題が弱い…"></textarea>
+        </div>
+
+        <div class="comment-field memo">
+          <label>
+            <span class="comment-icon">💡</span>
+            <span style="color:var(--accent2)">気づき・感想・次回やること</span>
+          </label>
+          <textarea id="diary-memo" rows="3" placeholder="例：基本はできた。次回は応用問題に挑戦する。明日もう一度見直す。"></textarea>
+        </div>
+      </div>
+
+      <button class="btn-diary-save" onclick="saveDiaryRecord()">📅 記録を保存する</button>
     </div>
   </div>
-
 </div>
+
 <div id="toast"></div>
 
 <!-- Googleカレンダーモーダル -->
@@ -366,13 +455,13 @@ canvas.curve-chart{width:100%;height:100%;display:block;}
 </div>
 
 <script>
-const STORAGE_KEY='study_call_v3', API_KEY_ST='study_call_apikey', DIARY_KEY='study_call_diary_v1';
-const INTERVALS=[1,3,7,21,30], LABELS=['1日後','3日後','7日後','21日後','30日後'];
+const STORAGE_KEY='study_call_v3',API_KEY_ST='study_call_apikey',DIARY_KEY='study_call_diary_v1';
+const INTERVALS=[1,3,7,21,30],LABELS=['1日後','3日後','7日後','21日後','30日後'];
 const SUBJ_NAMES={math:'数学',english:'英語',science:'理科',social:'社会',japanese:'国語',other:'その他'};
 const SUBJ_COLORS={math:'#ef4444',english:'#3b82f6',science:'#10b981',social:'#f59e0b',japanese:'#a855f7',other:'#94a3b8'};
 let currentFilter='all';
-let diaryYear=new Date().getFullYear(), diaryMonth=new Date().getMonth();
-let selectedDate='', diaryPhotoData=null;
+let diaryYear=new Date().getFullYear(),diaryMonth=new Date().getMonth(),selectedDate='';
+const diaryPhotos={first:null,last:null};
 
 const loadUnits=()=>{try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');}catch{return[];}};
 const saveUnits=u=>localStorage.setItem(STORAGE_KEY,JSON.stringify(u));
@@ -391,7 +480,7 @@ function showTab(tab,btn){
 }
 function setFilter(filter,btn){currentFilter=filter;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderList();}
 
-// 写真
+// 登録タブ写真
 const photos={first:null,last:null};
 function handlePhoto(slot,input){
   const file=input.files[0];if(!file)return;
@@ -406,46 +495,68 @@ function handlePhoto(slot,input){
   };reader.readAsDataURL(file);
 }
 
-// 勉強記録用写真
-function handleDiaryPhoto(input){
+// 記録タブ写真
+function handleDiaryPhoto(slot,input){
   const file=input.files[0];if(!file)return;
   const reader=new FileReader();
   reader.onload=e=>{
-    const url=e.target.result;diaryPhotoData=url.split(',')[1];
-    const thumb=document.getElementById('diary-thumb');thumb.src=url;thumb.style.display='block';
-    const slot=document.getElementById('diary-photo-slot');slot.classList.add('has-photo');
-    document.getElementById('diary-slot-icon').style.display='none';
-    document.getElementById('diary-slot-label').style.display='none';
-    document.getElementById('diary-slot-sub').style.display='none';
-    toast('写真を選択しました。AIで内容を自動入力できます','info');
+    const url=e.target.result;diaryPhotos[slot]=url.split(',')[1];
+    const thumb=document.getElementById('diary-thumb-'+slot);thumb.src=url;thumb.style.display='block';
+    const slotEl=document.getElementById('diary-slot-'+slot);slotEl.classList.add('has-photo');
+    document.getElementById('d-icon-'+slot).style.display='none';
+    document.getElementById('d-label-'+slot).style.display='none';
+    document.getElementById('d-sub-'+slot).style.display='none';
+    document.getElementById('diary-check-'+slot).style.display='flex';
+    document.getElementById('diary-analyze-result').classList.remove('show');
   };reader.readAsDataURL(file);
 }
 
-// 記録写真をAI解析
-async function analyzeDiaryPhoto(){
+// 登録タブ AI解析
+async function analyzePhotos(){
   const apiKey=loadApiKey()||document.getElementById('api-key').value.trim();
   if(!apiKey){toast('APIキーを保存してください','error');return;}
-  if(!diaryPhotoData){toast('写真を選択してください','error');return;}
-  const btn=document.getElementById('btn-diary-analyze');
-  btn.disabled=true;btn.innerHTML='<span class="spinner"></span>解析中...';
+  if(!photos.first&&!photos.last){toast('写真を1枚以上選択してください','error');return;}
+  const btn=document.getElementById('btn-analyze');btn.disabled=true;btn.innerHTML='<span class="spinner"></span>解析中...';
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:400,messages:[{role:'user',content:[
-        {type:'image',source:{type:'base64',media_type:'image/jpeg',data:diaryPhotoData}},
-        {type:'text',text:'この教材画像から学習した内容を1行で要約してください（例：数学 二次方程式 P.30〜35）。JSONのみで返してください：{"subject":"math/english/science/social/japanese/other","content":"学習内容の要約（30字以内）"}'}
-      ]}]})
-    });
+    const content=[];
+    if(photos.first){content.push({type:'image',source:{type:'base64',media_type:'image/jpeg',data:photos.first}});content.push({type:'text',text:'【最初のページの画像です】'});}
+    if(photos.last){content.push({type:'image',source:{type:'base64',media_type:'image/jpeg',data:photos.last}});content.push({type:'text',text:'【最後のページの画像です】'});}
+    content.push({type:'text',text:`教材画像から学習範囲を解析してください。JSONのみで返してください：{"subject":"教科名","subjectKey":"math/english/science/social/japanese/other","unitName":"単元名","pageRange":"ページ範囲","summary":"内容の説明（1〜2文）","keywords":["キーワード1"]}著作権に配慮し転載なし。`});
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:600,messages:[{role:'user',content}]})});
     if(!res.ok){const e=await res.json();throw new Error(e.error?.message||'APIエラー');}
-    const data=await res.json();
-    const raw=data.content[0].text;
-    let parsed;try{parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());}catch{throw new Error('解析失敗');}
-    if(parsed.subject)document.getElementById('diary-subject').value=parsed.subject;
-    if(parsed.content)document.getElementById('diary-content').value=parsed.content;
-    toast('AIが内容を自動入力しました！','success');
-  }catch(err){toast('エラー：'+err.message,'error');}
-  finally{btn.disabled=false;btn.innerHTML='🔍 写真からAIが内容を自動入力';}
+    const data=await res.json();let parsed;
+    try{parsed=JSON.parse(data.content[0].text.replace(/```json|```/g,'').trim());}catch{throw new Error('解析失敗');}
+    if(parsed.subjectKey)document.getElementById('subject').value=parsed.subjectKey;
+    if(parsed.unitName)document.getElementById('unit-name').value=parsed.unitName;
+    if(parsed.pageRange)document.getElementById('page-num').value=parsed.pageRange;
+    document.getElementById('result-text').innerHTML=`<strong>${parsed.unitName||'不明'}</strong>（${parsed.subject||'不明'}）<br>${parsed.pageRange?'📄 範囲：'+parsed.pageRange+'<br>':''}${parsed.summary||''}<br>${parsed.keywords?.length?'キーワード：'+parsed.keywords.join('、'):''}`;
+    document.getElementById('analysis-result').classList.add('show');showSchedulePreview();document.getElementById('btn-register').disabled=false;toast('解析完了！','success');
+  }catch(err){toast('エラー: '+err.message,'error');}
+  finally{btn.disabled=false;btn.innerHTML='🔍 AIで解析（単元・ページ範囲を自動入力）';}
+}
+
+// 記録タブ AI解析
+async function analyzeDiaryPhotos(){
+  const apiKey=loadApiKey()||document.getElementById('api-key').value.trim();
+  if(!apiKey){toast('APIキーを保存してください','error');return;}
+  if(!diaryPhotos.first&&!diaryPhotos.last){toast('写真を1枚以上選択してください','error');return;}
+  const btn=document.getElementById('btn-diary-analyze');btn.disabled=true;btn.innerHTML='<span class="spinner"></span>解析中...';
+  try{
+    const content=[];
+    if(diaryPhotos.first){content.push({type:'image',source:{type:'base64',media_type:'image/jpeg',data:diaryPhotos.first}});content.push({type:'text',text:'【最初のページの画像です】'});}
+    if(diaryPhotos.last){content.push({type:'image',source:{type:'base64',media_type:'image/jpeg',data:diaryPhotos.last}});content.push({type:'text',text:'【最後のページの画像です】'});}
+    content.push({type:'text',text:`教材画像から学習した範囲を解析してください。JSONのみで返してください：{"subject":"教科名","subjectKey":"math/english/science/social/japanese/other","unitName":"単元名または学習内容","pageRange":"ページ範囲","summary":"この範囲で学んだ内容の説明（1〜2文）"}著作権に配慮し転載なし。`});
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:600,messages:[{role:'user',content}]})});
+    if(!res.ok){const e=await res.json();throw new Error(e.error?.message||'APIエラー');}
+    const data=await res.json();let parsed;
+    try{parsed=JSON.parse(data.content[0].text.replace(/```json|```/g,'').trim());}catch{throw new Error('解析失敗');}
+    if(parsed.subjectKey)document.getElementById('diary-subject').value=parsed.subjectKey;
+    if(parsed.unitName)document.getElementById('diary-content').value=parsed.unitName;
+    if(parsed.pageRange)document.getElementById('diary-range').value=parsed.pageRange;
+    document.getElementById('diary-result-text').innerHTML=`<strong>${parsed.unitName||'不明'}</strong>（${parsed.subject||'不明'}）<br>${parsed.pageRange?'📄 範囲：'+parsed.pageRange+'<br>':''}${parsed.summary||''}`;
+    document.getElementById('diary-analyze-result').classList.add('show');toast('解析完了！内容を確認してください','success');
+  }catch(err){toast('エラー: '+err.message,'error');}
+  finally{btn.disabled=false;btn.innerHTML='🔍 AIで解析（学習内容を自動認識）';}
 }
 
 // 記録保存
@@ -459,78 +570,58 @@ function saveDiaryRecord(){
     date:today,
     subject:document.getElementById('diary-subject').value,
     content,
-    memo:document.getElementById('diary-memo').value,
+    pageRange:document.getElementById('diary-range').value,
     time:parseInt(document.getElementById('diary-time').value)||0,
-    createdAt:new Date().toISOString()
+    struggle:document.getElementById('diary-struggle').value.trim(),
+    failed:document.getElementById('diary-failed').value.trim(),
+    memo:document.getElementById('diary-memo').value.trim(),
   });
   saveDiary(diary);
   // リセット
-  document.getElementById('diary-content').value='';
-  document.getElementById('diary-memo').value='';
-  document.getElementById('diary-time').value='';
-  document.getElementById('diary-photo').value='';
-  document.getElementById('diary-thumb').style.display='none';
-  document.getElementById('diary-photo-slot').classList.remove('has-photo');
-  document.getElementById('diary-slot-icon').style.display='';
-  document.getElementById('diary-slot-label').style.display='';
-  document.getElementById('diary-slot-sub').style.display='';
-  diaryPhotoData=null;
-  document.getElementById('diary-input-section').style.display='none';
+  ['diary-content','diary-range','diary-time','diary-struggle','diary-failed','diary-memo'].forEach(id=>document.getElementById(id).value='');
+  ['first','last'].forEach(slot=>{
+    diaryPhotos[slot]=null;
+    document.getElementById('diary-thumb-'+slot).style.display='none';
+    document.getElementById('diary-thumb-'+slot).src='';
+    document.getElementById('diary-slot-'+slot).classList.remove('has-photo');
+    document.getElementById('d-icon-'+slot).style.display='';
+    document.getElementById('d-label-'+slot).style.display='';
+    document.getElementById('d-sub-'+slot).style.display='';
+    document.getElementById('diary-check-'+slot).style.display='none';
+    document.getElementById('diary-photo-'+slot).value='';
+  });
+  document.getElementById('diary-analyze-result').classList.remove('show');
+  document.getElementById('diary-form').classList.remove('show');
   toast('記録を保存しました！','success');
   renderDiary();
 }
 
-function toggleDiaryInput(){
-  const sec=document.getElementById('diary-input-section');
-  sec.style.display=sec.style.display==='none'?'block':'none';
+function toggleDiaryForm(){
+  const form=document.getElementById('diary-form');
+  form.classList.toggle('show');
 }
 
 // カレンダー描画
 function renderDiary(){
   const diary=loadDiary();
   const today=new Date().toISOString().split('T')[0];
-
-  // 統計
   const days=new Set(diary.map(d=>d.date));
   document.getElementById('diary-total').textContent=days.size;
-
   // 連続記録
   let streak=0,d=new Date();
-  while(true){
-    const ds=d.toISOString().split('T')[0];
-    if(days.has(ds)){streak++;d.setDate(d.getDate()-1);}else break;
-  }
+  while(true){const ds=d.toISOString().split('T')[0];if(days.has(ds)){streak++;d.setDate(d.getDate()-1);}else break;}
   document.getElementById('diary-streak').textContent=streak;
-
-  // 今月の日数
+  // 今月
   const monthStr=`${diaryYear}-${String(diaryMonth+1).padStart(2,'0')}`;
-  const monthDays=diary.filter(r=>r.date.startsWith(monthStr));
-  const monthDaySet=new Set(monthDays.map(r=>r.date));
+  const monthDaySet=new Set(diary.filter(r=>r.date.startsWith(monthStr)).map(r=>r.date));
   document.getElementById('diary-month-count').textContent=monthDaySet.size;
-
   // カレンダー
-  const label=`${diaryYear}年${diaryMonth+1}月`;
-  document.getElementById('diary-month-label').textContent=label;
-
+  document.getElementById('diary-month-label').textContent=`${diaryYear}年${diaryMonth+1}月`;
   const grid=document.getElementById('calendar-grid');
   grid.innerHTML='';
-  ['日','月','火','水','木','金','土'].forEach(d=>{
-    const h=document.createElement('div');h.className='cal-day-header';h.textContent=d;grid.appendChild(h);
-  });
-
-  const first=new Date(diaryYear,diaryMonth,1);
-  const last=new Date(diaryYear,diaryMonth+1,0);
-  const startDow=first.getDay();
-
-  // 前月
-  for(let i=0;i<startDow;i++){
-    const prev=new Date(diaryYear,diaryMonth,1-startDow+i);
-    const el=document.createElement('div');el.className='cal-day other-month';
-    el.innerHTML=`<div class="cal-day-num">${prev.getDate()}</div>`;
-    grid.appendChild(el);
-  }
-
-  // 今月
+  ['日','月','火','水','木','金','土'].forEach(d=>{const h=document.createElement('div');h.className='cal-day-header';h.textContent=d;grid.appendChild(h);});
+  const first=new Date(diaryYear,diaryMonth,1),last=new Date(diaryYear,diaryMonth+1,0);
+  for(let i=0;i<first.getDay();i++){const prev=new Date(diaryYear,diaryMonth,1-first.getDay()+i);const el=document.createElement('div');el.className='cal-day other-month';el.innerHTML=`<div class="cal-day-num">${prev.getDate()}</div>`;grid.appendChild(el);}
   for(let day=1;day<=last.getDate();day++){
     const dateStr=`${diaryYear}-${String(diaryMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
     const recs=diary.filter(r=>r.date===dateStr);
@@ -541,99 +632,52 @@ function renderDiary(){
     el.onclick=()=>selectDate(dateStr);
     grid.appendChild(el);
   }
-
-  // 翌月
   const endDow=last.getDay();
-  for(let i=1;i<7-endDow;i++){
-    const el=document.createElement('div');el.className='cal-day other-month';
-    el.innerHTML=`<div class="cal-day-num">${i}</div>`;grid.appendChild(el);
-  }
-
+  for(let i=1;i<7-endDow;i++){const el=document.createElement('div');el.className='cal-day other-month';el.innerHTML=`<div class="cal-day-num">${i}</div>`;grid.appendChild(el);}
   if(selectedDate)showDiaryDetail(selectedDate);
 }
 
-function selectDate(dateStr){
-  selectedDate=dateStr;
-  renderDiary();
-  showDiaryDetail(dateStr);
-}
+function selectDate(dateStr){selectedDate=dateStr;renderDiary();showDiaryDetail(dateStr);}
 
 function showDiaryDetail(dateStr){
   const diary=loadDiary();
   const recs=diary.filter(r=>r.date===dateStr);
   const detailEl=document.getElementById('diary-detail');
-  const dateLabel=document.getElementById('diary-detail-date');
-  const [y,m,d]=dateStr.split('-');
-  dateLabel.textContent=`${y}年${parseInt(m)}月${parseInt(d)}日の記録`;
-
+  const[y,m,d]=dateStr.split('-');
+  document.getElementById('diary-detail-date').textContent=`${y}年${parseInt(m)}月${parseInt(d)}日の記録`;
   if(!recs.length){
     document.getElementById('diary-detail-records').innerHTML=`<div style="font-size:13px;color:var(--text3);text-align:center;padding:16px">この日の記録はありません</div>`;
     detailEl.classList.add('show');return;
   }
-
   let totalTime=0;
   const html=recs.map(r=>{
     totalTime+=r.time||0;
     return `
       <div class="diary-record-item">
         <span class="diary-record-subj subj-${r.subject}">${SUBJ_NAMES[r.subject]||'その他'}</span>
-        <div class="diary-record-content">${r.content}</div>
-        ${r.memo?`<div class="diary-record-memo">💬 ${r.memo}</div>`:''}
-        ${r.time?`<div class="diary-record-memo">⏱ ${r.time}分</div>`:''}
-        <div class="diary-record-actions">
+        <div class="diary-record-title">${r.content}</div>
+        ${r.pageRange?`<div class="diary-record-range">📄 ${r.pageRange}</div>`:''}
+        ${r.time?`<div class="diary-record-range">⏱ ${r.time}分</div>`:''}
+        ${r.struggle?`<div class="diary-struggle"><div class="diary-struggle-label">😓 理解に苦労したところ</div><div class="diary-struggle-text">${r.struggle}</div></div>`:''}
+        ${r.failed?`<div class="diary-failed"><div class="diary-failed-label">❌ できなかったところ</div><div class="diary-failed-text">${r.failed}</div></div>`:''}
+        ${r.memo?`<div class="diary-memo-box"><div class="diary-memo-label">💡 気づき・次回やること</div><div class="diary-memo-text">${r.memo}</div></div>`:''}
+        <div class="diary-record-footer">
+          <span></span>
           <button onclick="deleteDiaryRecord('${r.id}')" style="padding:4px 8px;background:transparent;border:1px solid var(--border);border-radius:4px;color:var(--text3);font-size:11px;cursor:pointer;">🗑 削除</button>
         </div>
       </div>`;
   }).join('');
-
-  document.getElementById('diary-detail-records').innerHTML=
-    html+(totalTime?`<div style="font-size:11px;color:var(--accent2);text-align:right;margin-top:4px;font-family:Space Mono,monospace">合計 ${totalTime}分</div>`:'');
+  document.getElementById('diary-detail-records').innerHTML=html+(totalTime?`<div style="font-size:11px;color:var(--accent2);text-align:right;margin-top:4px;font-family:Space Mono,monospace">合計 ${totalTime}分</div>`:'');
   detailEl.classList.add('show');
 }
 
-function deleteDiaryRecord(id){
-  if(!confirm('この記録を削除しますか？'))return;
-  saveDiary(loadDiary().filter(r=>r.id!==id));
-  renderDiary();toast('削除しました','info');
-}
-
-function changeMonth(dir){
-  diaryMonth+=dir;
-  if(diaryMonth<0){diaryMonth=11;diaryYear--;}
-  if(diaryMonth>11){diaryMonth=0;diaryYear++;}
-  selectedDate='';
-  document.getElementById('diary-detail').classList.remove('show');
-  renderDiary();
-}
-
-// AI解析（登録タブ）
-async function analyzePhotos(){
-  const apiKey=loadApiKey()||document.getElementById('api-key').value.trim();
-  if(!apiKey){toast('APIキーを保存してください','error');return;}
-  if(!photos.first&&!photos.last){toast('写真を1枚以上選択してください','error');return;}
-  const btn=document.getElementById('btn-analyze');btn.disabled=true;btn.innerHTML='<span class="spinner"></span>解析中...';
-  try{
-    const content=[];
-    if(photos.first){content.push({type:'image',source:{type:'base64',media_type:'image/jpeg',data:photos.first}});content.push({type:'text',text:'【最初のページの画像です】'});}
-    if(photos.last){content.push({type:'image',source:{type:'base64',media_type:'image/jpeg',data:photos.last}});content.push({type:'text',text:'【最後のページの画像です】'});}
-    content.push({type:'text',text:`教材画像から学習範囲を解析してください。JSONのみで返してください：{"subject":"教科名","subjectKey":"math/english/science/social/japanese/other","unitName":"単元名","pageRange":"ページ範囲","summary":"内容の説明（1〜2文）","keywords":["キーワード1"]}著作権に配慮し、テキストの転載はせず構造的な情報のみ抽出してください。`});
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:600,messages:[{role:'user',content}]})});
-    if(!res.ok){const e=await res.json();throw new Error(e.error?.message||'APIエラー');}
-    const data=await res.json();const raw=data.content[0].text;
-    let parsed;try{parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());}catch{throw new Error('解析に失敗しました');}
-    if(parsed.subjectKey)document.getElementById('subject').value=parsed.subjectKey;
-    if(parsed.unitName)document.getElementById('unit-name').value=parsed.unitName;
-    if(parsed.pageRange)document.getElementById('page-num').value=parsed.pageRange;
-    document.getElementById('result-text').innerHTML=`<strong>${parsed.unitName||'不明'}</strong>（${parsed.subject||'不明'}）<br>${parsed.pageRange?'📄 範囲：'+parsed.pageRange+'<br>':''}${parsed.summary||''}<br>${parsed.keywords?.length?'キーワード：'+parsed.keywords.join('、'):''}`;
-    document.getElementById('analysis-result').classList.add('show');showSchedulePreview();document.getElementById('btn-register').disabled=false;toast('解析完了！','success');
-  }catch(err){toast('エラー: '+err.message,'error');}
-  finally{btn.disabled=false;btn.innerHTML='🔍 AIで解析（単元・ページ範囲を自動入力）';}
-}
+function deleteDiaryRecord(id){if(!confirm('この記録を削除しますか？'))return;saveDiary(loadDiary().filter(r=>r.id!==id));renderDiary();toast('削除しました','info');}
+function changeMonth(dir){diaryMonth+=dir;if(diaryMonth<0){diaryMonth=11;diaryYear--;}if(diaryMonth>11){diaryMonth=0;diaryYear++;}selectedDate='';document.getElementById('diary-detail').classList.remove('show');renderDiary();}
 
 function showSchedulePreview(){
   const today=new Date(),el=document.getElementById('schedule-items');el.innerHTML='';
   const cls=['si-r1','si-r2','si-r3','si-r4','si-r5'];
-  INTERVALS.forEach((days,i)=>{const d=new Date(today);d.setDate(d.getDate()+days);const ds=`${d.getMonth()+1}/${d.getDate()}`;const item=document.createElement('div');item.className=`schedule-item ${cls[i]}`;item.textContent=`${LABELS[i]}（${ds}）`;el.appendChild(item);});
+  INTERVALS.forEach((days,i)=>{const d=new Date(today);d.setDate(d.getDate()+days);const item=document.createElement('div');item.className=`schedule-item ${cls[i]}`;item.textContent=`${LABELS[i]}（${d.getMonth()+1}/${d.getDate()}）`;el.appendChild(item);});
   document.getElementById('schedule-preview').classList.add('show');
 }
 
@@ -657,10 +701,7 @@ function resetSlot(slot){
   document.getElementById('check-'+slot).style.display='none';document.getElementById('photo-'+slot).value='';
 }
 
-function makeGCalUrl(title,dateStr,desc){
-  const d=dateStr.replace(/-/g,'');const nextDay=new Date(dateStr);nextDay.setDate(nextDay.getDate()+1);const nd=nextDay.toISOString().split('T')[0].replace(/-/g,'');
-  return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${d}/${nd}&details=${encodeURIComponent(desc)}`;
-}
+function makeGCalUrl(title,dateStr,desc){const d=dateStr.replace(/-/g,'');const nd=new Date(dateStr);nd.setDate(nd.getDate()+1);const n=nd.toISOString().split('T')[0].replace(/-/g,'');return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${d}/${n}&details=${encodeURIComponent(desc)}`;}
 let gcalQueue=[],gcalIndex=0;
 function openGCal(unit){const sl=SUBJ_NAMES[unit.subject]||'その他';gcalQueue=unit.reviews.map((r,i)=>({title:`【復習${i+1}回目】${sl}：${unit.unitName}`,date:r.date,desc:`${unit.pageNum?'ページ：'+unit.pageNum+'\n':''}${unit.memo?'メモ：'+unit.memo+'\n':''}\nスタディコール`,label:r.label}));gcalIndex=0;showGCalModal();}
 function showGCalModal(){if(gcalIndex>=gcalQueue.length){closeGCalModal();toast('全ての復習予定をカレンダーに追加しました！','success');return;}const item=gcalQueue[gcalIndex];document.getElementById('gcal-step').textContent=`${gcalIndex+1} / ${gcalQueue.length}`;document.getElementById('gcal-label').textContent=item.label;document.getElementById('gcal-date').textContent=item.date;document.getElementById('gcal-title-txt').textContent=item.title;document.getElementById('gcal-modal').style.display='flex';}
